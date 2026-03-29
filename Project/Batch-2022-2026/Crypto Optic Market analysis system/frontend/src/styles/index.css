@@ -1,0 +1,117 @@
+/* ============================= */
+/* GLOBAL RESET */
+/* ============================= */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* ============================= */
+/* COLOR SYSTEM */
+/* ============================= */
+
+:root {
+  --bg-primary: #f8fafc; /* Very light slate */
+  --bg-secondary: #ffffff; /* Pure white */
+  --bg-card: rgba(255, 255, 255, 0.9); /* Glassy white */
+
+  --accent-primary: #06b6d4; /* Cyan */
+  --accent-primary-hover: #0891b2;
+  --accent-secondary: #6366f1; /* Indigo */
+  --accent-green: #10b981;
+  --accent-red: #ef4444;
+
+  --text-primary: #0f172a; /* Deep slate */
+  --text-muted: #475569; /* Slate gray */
+
+  --border-soft: rgba(0, 0, 0, 0.05); /* Soft gray border */
+  --glass-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.01);
+}
+
+/* ============================= */
+/* BODY */
+/* ============================= */
+
+body {
+  font-family: 'Inter', -apple-system, system-ui, sans-serif;
+  background: 
+    radial-gradient(circle at 15% 50%, rgba(6, 182, 212, 0.05), transparent 30%),
+    radial-gradient(circle at 85% 30%, rgba(99, 102, 241, 0.05), transparent 30%),
+    var(--bg-primary);
+  background-attachment: fixed;
+  color: var(--text-primary);
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ============================= */
+/* SCROLLBAR */
+/* ============================= */
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-primary); 
+}
+
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* ============================= */
+/* HEADINGS */
+/* ============================= */
+
+h1 {
+  font-size: 2.5rem;
+  font-weight: 800;
+  background: linear-gradient(to right, #0891b2, #4f46e5); /* Slightly darker gradient for visibility */
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent; /* Use standard property along with webkit */
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 0.5rem;
+  letter-spacing: -0.02em;
+}
+
+h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 0.75rem;
+  letter-spacing: -0.01em;
+}
+
+h3 {
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+/* ============================= */
+/* TEXT HELPERS */
+/* ============================= */
+
+p {
+  line-height: 1.6;
+  color: var(--text-muted);
+}
+
+ul {
+  margin-top: 0.5rem;
+  padding-left: 1.25rem;
+}
+
+li {
+  margin-bottom: 0.5rem;
+  color: var(--text-muted);
+}
