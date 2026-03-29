@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    
+    <input>
+        <net-file value="intersection.net.xml"/>
+        <route-files value="routes.rou.xml"/>
+        <additional-files value="detector.add.xml"/>
+    </input>
+    
+    <time>
+        <begin value="0"/>
+        <end value="3600"/>
+        <step-length value="1.0"/>
+    </time>
+    
+    <processing>
+        <time-to-teleport value="-1"/>
+        <max-depart-delay value="300"/>
+    </processing>
+    
+    <report>
+        <verbose value="false"/>
+        <no-step-log value="true"/>
+        <no-warnings value="true"/>
+    </report>
+    
+</configuration>
