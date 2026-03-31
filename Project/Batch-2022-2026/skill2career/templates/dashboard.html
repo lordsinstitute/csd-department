@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Your Results — Skill 2 Career</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,600;0,9..144,900;1,9..144,300;1,9..144,600;1,9..144,900&family=Lexend:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    .page { position:relative; z-index:1; max-width:1160px; margin:0 auto; padding:52px 28px 100px; }
+
+    /* ── Header ── */
+    .pg-hdr {
+      display:grid; grid-template-columns:1fr auto;
+      align-items:start; gap:24px;
+      margin-bottom:52px; padding-bottom:36px;
+      border-bottom:1px solid var(--border);
+    }
+    .eyebrow {
+      display:inline-flex; align-items:center; gap:8px;
+      font-family:var(--serif); font-style:italic; font-size:0.95rem;
+      color:var(--sage); margin-bottom:14px;
+    }
+    .eyebrow .dot { width:6px;height:6px;border-radius:50%;background:var(--sage);animation:blink 2s ease-in-out infinite; }
+    .pg-hdr h1 {
+      font-family:var(--serif); font-size:clamp(2rem,4vw,3.2rem);
+      font-weight:900; line-height:1.0; letter-spacing:-0.02em;
+      color:var(--text); margin-bottom:14px;
+    }
+    .pg-hdr h1 em { font-style:italic; color:var(--sage); }
+    .user-tag {
+      display:inline-flex; align-items:center; gap:10px;
+      background:var(--sage-d); border:1px solid var(--border2);
+      border-radius:100px; padding:8px 18px;
+      font-size:13px; color:var(--muted); font-weight:500;
+    }
+    .user-tag strong { color:var(--sage); font-family:var(--serif); font-style:italic; font-size:15px; }
+    .hdr-right { display:flex; flex-direction:column; align-items:flex-end; gap:14px; }
+    .stats-mini { display:flex; gap:24px; }
+    .sm-item { text-align:center; }
+    .sm-n { font-family:var(--serif); font-size:1.6rem; font-weight:900; color:var(--sage); line-height:1; }
+    .sm-l { font-size:11px; color:var(--muted); font-weight:600; margin-top:2px; letter-spacing:0.04em; text-transform:uppercase; }
+
+    /* ── Best Match Hero ── */
+    .best-hero {
+      display:grid; grid-template-columns:1fr 340px;
+      margin-bottom:24px;
+      background:var(--card); border:1px solid var(--border2);
+      border-radius:28px; overflow:hidden; box-shadow:var(--shadow-lg);
+    }
+    .bh-left {
+      padding:48px;
+      background:linear-gradient(135deg,rgba(92,122,92,0.06) 0%,transparent 60%);
+      border-right:1px solid var(--border);
+      display:flex; flex-direction:column;
+    }
+    .best-crown {
+      display:inline-flex; align-items:center; gap:8px;
+      font-size:11px; font-weight:700; letter-spacing:0.10em; text-transform:uppercase;
+      color:var(--sage); background:var(--sage-d); border:1px solid var(--border2);
+      padding:6px 16px; border-radius:100px; margin-bottom:18px; width:fit-content;
+    }
+    .bh-domain { font-size:12px; font-weight:700; color:var(--muted); letter-spacing:0.08em; text-transform:uppercase; margin-bottom:8px; }
+    .bh-title {
+      font-family:var(--serif); font-size:clamp(1.8rem,3.5vw,2.8rem);
+      font-weight:900; color:var(--text); line-height:1.0;
+      letter-spacing:-0.02em; margin-bottom:18px;
+    }
+    .bh-expl { font-size:14px; color:var(--muted); line-height:1.85; margin-bottom:26px; max-width:480px; }
+    .score-row { display:flex; align-items:center; gap:16px; flex-wrap:wrap; margin-bottom:24px; }
+    .score-pill {
+      display:flex; align-items:center; gap:12px;
+      background:var(--bg); border:1px solid var(--border);
+      border-radius:16px; padding:14px 20px;
+    }
+    .sp-n { font-family:var(--serif); font-size:1.9rem; font-weight:900; color:var(--sage); line-height:1; }
+    .sp-l { font-size:11px; color:var(--muted); font-weight:600; text-transform:uppercase; letter-spacing:0.06em; margin-top:2px; }
+    .sp-bar { width:110px; height:4px; background:var(--sage-d); border-radius:3px; overflow:hidden; margin-top:6px; }
+    .sp-fill { height:100%; background:var(--sage-g); border-radius:3px; }
+    .skill-tags { display:flex; flex-wrap:wrap; gap:6px; margin-top:auto; }
+    .sk-t { display:inline-flex; align-items:center; gap:4px; font-size:12px; font-weight:600; padding:5px 13px; border-radius:100px; }
+    .sk-ok   { background:rgba(34,197,94,0.07);  color:#16a34a; border:1px solid rgba(34,197,94,0.18); }
+    .sk-miss { background:rgba(220,38,38,0.07);  color:#dc2626; border:1px solid rgba(220,38,38,0.18); }
+    .sk-weak { background:rgba(184,92,56,0.09);  color:#b85c38; border:1px solid rgba(184,92,56,0.22); }
+
+    /* Right tabbed panel */
+    .bh-right { display:flex; flex-direction:column; }
+    .bh-tab-bar { display:flex; border-bottom:1px solid var(--border); }
+    .bh-tab {
+      flex:1; padding:18px 8px; font-family:var(--font); font-size:12px; font-weight:700;
+      border:none; background:transparent; cursor:pointer; color:var(--muted);
+      border-bottom:2px solid transparent; margin-bottom:-1px; transition:all 0.2s;
+    }
+    .bh-tab:hover { color:var(--sage); }
+    .bh-tab.active { color:var(--sage); border-bottom-color:var(--sage); background:rgba(92,122,92,0.03); }
+    .bh-panel { display:none; padding:24px; overflow-y:auto; }
+    .bh-panel.active { display:block; }
+    .panel-lbl { font-size:10px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:var(--muted); margin-bottom:10px; display:block; }
+    .str-item { padding:12px 14px; background:rgba(34,197,94,0.05); border:1px solid rgba(34,197,94,0.15); border-radius:12px; margin-bottom:8px; }
+    .str-item-title { font-size:12px; font-weight:700; color:#16a34a; margin-bottom:3px; }
+    .str-item-sub   { font-size:12px; color:var(--muted); line-height:1.6; }
+    .gap-item { padding:12px 14px; background:rgba(220,38,38,0.05); border:1px solid rgba(220,38,38,0.15); border-radius:12px; margin-bottom:8px; }
+    .gap-item-title { font-size:12px; font-weight:700; color:#dc2626; margin-bottom:3px; }
+    .gap-item-sub { font-size:12px; color:var(--muted); line-height:1.6; }
+    .ready-badge { padding:12px 14px; background:var(--sage-d); border-radius:12px; font-size:13px; color:var(--sage); font-weight:600; text-align:center; margin-top:10px; }
+    .roadmap-item { display:flex; gap:12px; align-items:flex-start; padding:11px 0; border-bottom:1px solid var(--border); }
+    .roadmap-item:last-child { border-bottom:none; }
+    .rm-dot { width:7px; height:7px; border-radius:50%; flex-shrink:0; margin-top:5px; }
+    .rm-dot.g { background:var(--sage); }
+    .rm-dot.r { background:var(--rust); }
+    .rm-text { font-size:13px; color:var(--muted); line-height:1.7; }
+
+    /* ── Section divider ── */
+    .sec-div { display:flex; align-items:center; gap:16px; margin:44px 0 20px; }
+    .sec-div h3 { font-family:var(--serif); font-size:1.25rem; font-weight:900; color:var(--text); white-space:nowrap; }
+    .sec-div::after { content:''; flex:1; height:1px; background:var(--border); }
+
+    /* ── Cards grid ── */
+    .cards-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:14px; }
+    .career-card {
+      background:var(--card); border:1px solid var(--border);
+      border-radius:22px; overflow:hidden; box-shadow:var(--shadow);
+      transition:all 0.3s; cursor:pointer;
+    }
+    .career-card:hover { transform:translateY(-5px); box-shadow:var(--shadow-lg); border-color:var(--border2); }
+    .career-card.expanded { border-color:var(--sage); }
+    .card-accent { height:3px; width:100%; }
+    .ca-1 { background:linear-gradient(90deg,#5c7a5c,#7a9e7a); }
+    .ca-2 { background:linear-gradient(90deg,#7a9e7a,#a3c4a3); }
+    .ca-3 { background:linear-gradient(90deg,#b85c38,#d4815f); }
+    .ca-4 { background:linear-gradient(90deg,#4a6349,#5c7a5c); }
+    .card-inner { padding:22px; }
+    .card-rank { font-family:var(--serif); font-size:2.6rem; font-weight:900; color:var(--dim); line-height:1; margin-bottom:6px; }
+    .card-domain { font-size:11px; color:var(--muted); font-weight:600; letter-spacing:0.06em; text-transform:uppercase; margin-bottom:6px; }
+    .card-title { font-family:var(--serif); font-size:1.1rem; font-weight:900; color:var(--text); line-height:1.2; margin-bottom:14px; }
+    .card-score-row { display:flex; align-items:center; justify-content:space-between; margin-bottom:10px; }
+    .card-pct { font-family:var(--serif); font-size:1.7rem; font-weight:900; color:var(--sage); }
+    .card-sim { font-size:11px; color:var(--dim); font-weight:600; }
+    .card-bar { height:4px; background:var(--sage-d); border-radius:2px; overflow:hidden; margin-bottom:14px; }
+    .card-bar-fill { height:100%; background:var(--sage-g); border-radius:2px; }
+    .card-tags { display:flex; flex-wrap:wrap; gap:4px; }
+    .ct { font-size:11px; font-weight:600; padding:3px 10px; border-radius:100px; }
+    .ct-miss { background:rgba(220,38,38,0.07); color:#dc2626; border:1px solid rgba(220,38,38,0.15); }
+    .ct-weak { background:rgba(184,92,56,0.08); color:#b85c38; border:1px solid rgba(184,92,56,0.15); }
+    .ct-ok   { background:rgba(34,197,94,0.07); color:#16a34a; border:1px solid rgba(34,197,94,0.15); }
+    .card-expand { display:none; border-top:1px solid var(--border); padding:16px 22px; background:var(--bg); }
+    .career-card.expanded .card-expand { display:block; }
+    .ce-item { display:flex; gap:9px; align-items:flex-start; margin-bottom:7px; font-size:12px; color:var(--muted); line-height:1.6; }
+    .ce-dot  { width:5px; height:5px; border-radius:50%; background:var(--sage); flex-shrink:0; margin-top:5px; }
+
+    /* ── Footer ── */
+    .pg-footer { text-align:center; padding-top:44px; margin-top:44px; border-top:1px solid var(--border); }
+    .pg-footer p { font-size:13px; color:var(--muted); margin-bottom:16px; }
+
+    /* ── Animations ── */
+    .fade-in { opacity:0; transform:translateY(16px); animation:fadeIn 0.6s ease forwards; }
+    @keyframes fadeIn { to { opacity:1; transform:translateY(0); } }
+    .fade-in:nth-child(1){animation-delay:0.05s} .fade-in:nth-child(2){animation-delay:0.13s}
+    .fade-in:nth-child(3){animation-delay:0.21s} .fade-in:nth-child(4){animation-delay:0.29s}
+    .fade-in:nth-child(5){animation-delay:0.37s}
+
+    @media(max-width:1000px){ .best-hero{grid-template-columns:1fr;} .bh-right{border-top:1px solid var(--border);} }
+    @media(max-width:900px) { .cards-grid{grid-template-columns:repeat(2,1fr);} .pg-hdr{grid-template-columns:1fr;} .hdr-right{align-items:flex-start;} }
+    @media(max-width:520px) { .cards-grid{grid-template-columns:1fr;} }
+  </style>
+</head>
+<body>
+  <div class="topbar">
+    <a href="{{ url_for('about') }}" class="tb-logo">Skill<em>2</em>Career</a>
+    <nav class="tb-nav">
+      {% if current_user.is_authenticated %}
+        <a href="{{ url_for('user_profile') }}" class="tb-link">
+          <span class="tb-av">{{ current_user.name[0].upper() }}</span> Profile
+        </a>
+        <div class="tb-divider"></div>
+        <a href="{{ url_for('profile') }}" class="tb-link">Skills</a>
+        <a href="{{ url_for('results') }}" class="tb-link">Results</a>
+        <a href="{{ url_for('compare') }}" class="tb-link">Compare</a>
+        <div class="tb-divider"></div>
+        <a href="{{ url_for('auth.logout') }}" class="tb-link">Log out</a>
+      {% else %}
+        <a href="{{ url_for('auth.login') }}" class="tb-link">Log in</a>
+        <a href="{{ url_for('auth.signup') }}" class="tb-btn">Sign up</a>
+      {% endif %}
+    </nav>
+  </div>
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+
+  <svg width="0" height="0" style="position:absolute;">
+    <defs>
+      <linearGradient id="sageGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" style="stop-color:#5c7a5c"/>
+        <stop offset="100%" style="stop-color:#7a9e7a"/>
+      </linearGradient>
+    </defs>
+  </svg>
+
+  {% set best = careers[0] %}
+  {% set rest = careers[1:] %}
+  {% set accent_classes = ['ca-1','ca-2','ca-3','ca-4'] %}
+  {% set domain_icons = {
+    'Data Scientist':'💻','ML Engineer':'💻','Software Developer':'💻','Full Stack Developer':'💻',
+    'Cloud Engineer':'💻','Cybersecurity Analyst':'💻','DevOps Engineer':'💻',
+    'Embedded Systems Engineer':'💻','Robotics Engineer':'💻','Blockchain Developer':'💻',
+    'Mobile App Developer':'💻','Data Engineer':'💻','Network Engineer':'💻','IoT Engineer':'💻',
+    'Financial Analyst':'💼','Investment Banker':'💼','Business Analyst':'💼',
+    'Marketing Analyst':'💼','Product Manager':'💼','Supply Chain Manager':'💼',
+    'HR Specialist':'💼','Entrepreneur':'💼','Accountant':'💼',
+    'Management Consultant':'💼','Digital Marketer':'💼','Sales Manager':'💼',
+    'Doctor (General Physician)':'🏥','Surgeon':'🏥','Pharmacist':'🏥',
+    'Psychologist / Therapist':'🏥','Nurse':'🏥','Public Health Specialist':'🏥',
+    'Nutritionist / Dietitian':'🏥','Radiologist':'🏥','Health Informatics Specialist':'🏥',
+    'Lawyer':'⚖️','Criminal Lawyer':'⚖️','Policy Analyst':'⚖️',
+    'Compliance Officer':'⚖️','Diplomat / International Relations':'⚖️',
+    'UI/UX Designer':'🎨','Graphic Designer':'🎨','Video Editor / Filmmaker':'🎨',
+    'Architect':'🎨','Interior Designer':'🎨','Fashion Designer':'🎨','Animator':'🎨','Music Producer':'🎨',
+    'Teacher / Educator':'📚','Research Scientist':'📚','University Professor':'📚',
+    'Instructional Designer':'📚','Data Analyst (Research)':'📚',
+    'Civil Engineer':'🔧','Electrical Engineer':'🔧','Urban Planner':'🔧','Construction Manager':'🔧',
+    'Journalist / Reporter':'📡','Content Creator / Influencer':'📡',
+    'Public Relations Specialist':'📡','Broadcaster / Presenter':'📡','Technical Writer':'📡'
+  } %}
+
+  <div class="page">
+
+    <!-- HEADER -->
+    <div class="pg-hdr fade-in">
+      <div class="hdr-left">
+        <div class="eyebrow"><span class="dot"></span> Analysis Complete · {{ careers|length }} matches found</div>
+        <h1>Your Career<br><em>Matches</em></h1>
+        <div class="user-tag" style="margin-top:14px;">
+          Showing results for <strong>{{ name }}</strong>
+        </div>
+      </div>
+      <div class="hdr-right">
+        <div class="stats-mini">
+          <div class="sm-item">
+            <div class="sm-n">{{ best.match_percent }}%</div>
+            <div class="sm-l">Top Match</div>
+          </div>
+          <div class="sm-item">
+            <div class="sm-n">{{ careers|length }}</div>
+            <div class="sm-l">Careers</div>
+          </div>
+          <div class="sm-item">
+            <div class="sm-n">{{ best.missing_core|length }}</div>
+            <div class="sm-l">Core Gaps</div>
+          </div>
+        </div>
+        <a href="{{ url_for('compare') }}" class="btn" style="margin-top:6px;">
+          ⚖️ Compare Careers
+        </a>
+        <a href="{{ url_for('print_report') }}" target="_blank" class="btn btn-outline" style="margin-top:6px;">
+          🖨️ Print Results
+        </a>
+      </div>
+    </div>
+
+    <!-- BEST MATCH HERO -->
+    <div class="best-hero fade-in">
+      <div class="bh-left">
+        <div class="best-crown">⭐ Best Match</div>
+        <div class="bh-domain">{{ domain_icons.get(best.title,'🌐') }} {{ best.title }}</div>
+        <div class="bh-title">{{ best.title }}</div>
+        <p class="bh-expl">{{ best.explanation }}</p>
+
+        <div class="score-row">
+          <div class="score-pill">
+            <div>
+              <div class="sp-n">{{ best.match_percent }}%</div>
+              <div class="sp-l">Readiness</div>
+              <div class="sp-bar"><div class="sp-fill" style="width:{{ best.match_percent }}%"></div></div>
+            </div>
+          </div>
+          <div class="score-pill">
+            <div>
+              <div class="sp-n">{{ best.similarity }}</div>
+              <div class="sp-l">Similarity</div>
+              <div class="sp-bar"><div class="sp-fill" style="width:{{ (best.similarity * 100)|round }}%"></div></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="skill-tags">
+          {% for s in best.missing_core %}
+            <span class="sk-t sk-miss">✗ {{ s.replace('_',' ').title() }}</span>
+          {% endfor %}
+          {% for s in best.weak_supporting %}
+            <span class="sk-t sk-weak">△ {{ s.replace('_',' ').title() }}</span>
+          {% endfor %}
+          {% if not best.missing_core and not best.weak_supporting %}
+            <span class="sk-t sk-ok">✓ All requirements met!</span>
+          {% endif %}
+        </div>
+      </div>
+
+      <div class="bh-right">
+        <div class="bh-tab-bar">
+          <button class="bh-tab active" onclick="bhTab(this,'bh-str')">✅ Strengths</button>
+          <button class="bh-tab" onclick="bhTab(this,'bh-gap')">❌ Gaps</button>
+          <button class="bh-tab" onclick="bhTab(this,'bh-road')">🗺 Roadmap</button>
+        </div>
+
+        <div id="bh-str" class="bh-panel active">
+          <span class="panel-lbl">Why you're a strong fit</span>
+          {% if best.strong_skills %}
+            {% for sk in best.strong_skills %}
+            <div class="str-item">
+              <div class="str-item-title">{{ sk.name }} — {{ sk.level }} ({{ sk.score }}/5)</div>
+              <div class="str-item-sub">Core requirement fully met. This skill directly strengthens your profile for {{ best.title }}.</div>
+            </div>
+            {% endfor %}
+          {% else %}
+            <div class="str-item">
+              <div class="str-item-title">Good foundational profile</div>
+              <div class="str-item-sub">Your current skills give you a starting point. Focus on the Gaps tab to improve your match.</div>
+            </div>
+          {% endif %}
+          <div class="ready-badge" style="margin-top:14px;">
+            You meet {{ best.strong_skills|length }} of {{ (best.strong_skills|length + best.missing_core|length) }} core requirements ✓
+          </div>
+        </div>
+
+        <div id="bh-gap" class="bh-panel">
+          {% if best.missing_core %}
+            <span class="panel-lbl">Core skills needed</span>
+            {% for s in best.missing_core %}
+            <div class="gap-item">
+              <div class="gap-item-title">✗ {{ s.replace('_',' ').title() }}</div>
+              <div class="gap-item-sub">Core requirement. Prioritize developing this skill first.</div>
+            </div>
+            {% endfor %}
+          {% endif %}
+          {% if best.weak_supporting %}
+            <span class="panel-lbl" style="margin-top:12px;">Skills to strengthen</span>
+            <div style="display:flex;flex-wrap:wrap;gap:5px;">
+              {% for s in best.weak_supporting %}
+                <span class="sk-t sk-weak">△ {{ s.replace('_',' ').title() }}</span>
+              {% endfor %}
+            </div>
+          {% endif %}
+          {% if not best.missing_core and not best.weak_supporting %}
+            <div class="ready-badge">🎉 No gaps — you're career ready!</div>
+          {% endif %}
+        </div>
+
+        <div id="bh-road" class="bh-panel">
+          <span class="panel-lbl">3-Month Plan</span>
+          <div style="margin-bottom:18px;">
+            {% for item in best.roadmap['3_month'] %}
+            <div class="roadmap-item">
+              <div class="rm-dot g"></div>
+              <div class="rm-text">{{ item }}</div>
+            </div>
+            {% endfor %}
+          </div>
+          <span class="panel-lbl">6-Month Plan</span>
+          {% for item in best.roadmap['6_month'] %}
+          <div class="roadmap-item">
+            <div class="rm-dot r"></div>
+            <div class="rm-text">{{ item }}</div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+
+    <!-- OTHER MATCHES -->
+    {% if rest %}
+    <div class="sec-div">
+      <h3>Other Top Matches</h3>
+    </div>
+    <div class="cards-grid">
+      {% for career in rest %}
+      {% set idx = loop.index0 %}
+      <div class="career-card fade-in" onclick="toggleCard(this)">
+        <div class="card-accent {{ accent_classes[idx % 4] }}"></div>
+        <div class="card-inner">
+          <div class="card-rank">#{{ loop.index + 1 }}</div>
+          <div class="card-domain">{{ domain_icons.get(career.title,'🌐') }}</div>
+          <div class="card-title">{{ career.title }}</div>
+          <div class="card-score-row">
+            <div class="card-pct">{{ career.match_percent }}%</div>
+            <div class="card-sim">sim {{ career.similarity }}</div>
+          </div>
+          <div class="card-bar">
+            <div class="card-bar-fill" style="width:{{ career.match_percent }}%"></div>
+          </div>
+          <div class="card-tags">
+            {% for s in career.missing_core[:2] %}
+              <span class="ct ct-miss">✗ {{ s.replace('_',' ').title() }}</span>
+            {% endfor %}
+            {% for s in career.weak_supporting[:1] %}
+              <span class="ct ct-weak">△ {{ s.replace('_',' ').title() }}</span>
+            {% endfor %}
+            {% if not career.missing_core and not career.weak_supporting %}
+              <span class="ct ct-ok">✓ Career ready</span>
+            {% endif %}
+          </div>
+        </div>
+        <div class="card-expand">
+          <div style="font-size:10px;font-weight:700;color:var(--muted);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:10px;">3-Month Plan</div>
+          {% for item in career.roadmap['3_month'] %}
+          <div class="ce-item"><div class="ce-dot"></div>{{ item }}</div>
+          {% endfor %}
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- FOOTER -->
+    <div class="pg-footer fade-in">
+      <p>Want different results? Go back and update your skill ratings.</p>
+      <a href="{{ url_for('profile') }}" class="btn btn-outline">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        Re-analyze with new skills
+      </a>
+    </div>
+
+  </div>
+
+  <script>
+    function bhTab(btn, id) {
+      document.querySelectorAll('.bh-tab').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      document.querySelectorAll('.bh-panel').forEach(p => p.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+    }
+    function toggleCard(card) {
+      const wasExpanded = card.classList.contains('expanded');
+      document.querySelectorAll('.career-card').forEach(c => c.classList.remove('expanded'));
+      if (!wasExpanded) card.classList.add('expanded');
+    }
+  </script>
+</body>
+</html>

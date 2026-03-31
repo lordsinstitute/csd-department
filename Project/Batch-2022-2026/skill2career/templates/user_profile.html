@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Profile — Skill 2 Career</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,600;0,9..144,900;1,9..144,300;1,9..144,600;1,9..144,900&family=Lexend:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    .page { max-width:960px; margin:0 auto; padding:48px 48px 80px; }
+    .page-eyebrow { font-size:11px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--sage); margin-bottom:10px; }
+    .page-title { font-family:var(--serif); font-size:2.2rem; font-weight:900; color:var(--text); margin-bottom:32px; }
+
+    .profile-grid { display:grid; grid-template-columns:1fr 1.4fr; gap:24px; }
+    @media(max-width:760px){ .profile-grid { grid-template-columns:1fr; } }
+
+    .card { background:#fff; border:1px solid var(--border); border-radius:16px; padding:28px; margin-bottom:20px; }
+    .card-title { font-family:var(--serif); font-size:1.1rem; font-weight:900; color:var(--text); margin-bottom:20px; display:flex; align-items:center; gap:10px; }
+
+    /* Avatar */
+    .avatar-block { text-align:center; padding:8px 0 20px; }
+    .avatar { width:72px; height:72px; border-radius:16px; background:var(--sage-g); color:#fff; font-family:var(--serif); font-size:2rem; font-weight:900; display:flex; align-items:center; justify-content:center; margin:0 auto 14px; }
+    .avatar-name { font-family:var(--serif); font-size:1.3rem; font-weight:900; color:var(--text); }
+    .avatar-email { font-size:13px; color:var(--muted); margin-top:4px; }
+    .avatar-since { font-size:12px; color:var(--dim); margin-top:3px; }
+
+    /* Info pills */
+    .info-pills { display:flex; flex-direction:column; gap:10px; margin-top:16px; }
+    .info-pill { display:flex; justify-content:space-between; align-items:center; padding:10px 14px; background:var(--bg); border-radius:10px; border:1px solid var(--border); }
+    .ip-label { font-size:12px; color:var(--muted); font-weight:600; }
+    .ip-value { font-size:13px; color:var(--text); font-weight:700; font-family:var(--serif); }
+
+    /* Form */
+    .form-group { margin-bottom:16px; }
+    .form-label { display:block; font-size:12px; font-weight:700; color:var(--muted); letter-spacing:0.08em; text-transform:uppercase; margin-bottom:7px; }
+    .form-input { width:100%; padding:11px 16px; background:var(--bg); border:1.5px solid var(--border); border-radius:10px; font-family:var(--font); font-size:14px; color:var(--text); outline:none; transition:border-color .2s; }
+    .form-input:focus { border-color:var(--sage); box-shadow:0 0 0 3px var(--sage-d); }
+    .form-row { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+
+    /* Flash */
+    .flash { padding:10px 16px; border-radius:10px; font-size:13px; font-weight:600; margin-bottom:16px; }
+    .flash-success { background:rgba(92,122,92,0.1); border:1px solid var(--border2); color:var(--sage3); }
+    .flash-error { background:rgba(220,60,60,0.06); border:1px solid rgba(220,60,60,0.2); color:#b83232; }
+
+    /* Recent results */
+    .result-item { display:flex; justify-content:space-between; align-items:center; padding:12px 0; border-bottom:1px solid var(--border); }
+    .result-item:last-child { border-bottom:none; }
+    .ri-left { display:flex; flex-direction:column; gap:3px; }
+    .ri-date { font-size:11px; color:var(--muted); }
+    .ri-career { font-family:var(--serif); font-size:1rem; font-weight:700; color:var(--text); }
+    .ri-skills { font-size:11px; color:var(--muted); margin-top:2px; }
+    .ri-pct { font-family:var(--serif); font-size:1.6rem; font-weight:900; color:var(--sage); }
+    .ri-view { font-size:12px; font-weight:700; color:var(--sage); text-decoration:none; padding:5px 12px; border:1.5px solid var(--border2); border-radius:100px; transition:all .2s; }
+    .ri-view:hover { background:var(--sage-d); border-color:var(--sage); }
+    .ri-right { display:flex; align-items:center; gap:10px; }
+
+    .danger-zone { border:1.5px solid rgba(220,60,60,0.2); border-radius:12px; padding:20px; }
+    .danger-title { font-size:13px; font-weight:700; color:#b83232; margin-bottom:6px; }
+    .danger-desc { font-size:12px; color:var(--muted); margin-bottom:14px; line-height:1.6; }
+    .btn-danger { background:transparent; border:1.5px solid rgba(220,60,60,0.35); color:#b83232; font-size:13px; font-weight:700; padding:9px 20px; border-radius:100px; cursor:pointer; transition:all .2s; }
+    .btn-danger:hover { background:rgba(220,60,60,0.08); border-color:#b83232; }
+
+    .empty-results { text-align:center; padding:24px; color:var(--muted); font-size:13px; }
+    .skill-bar-mini { display:flex; align-items:center; gap:6px; margin-top:4px; }
+    .sbm-label { font-size:10px; color:var(--muted); min-width:80px; }
+    .sbm-track { flex:1; height:4px; background:var(--sage-d); border-radius:2px; overflow:hidden; max-width:100px; }
+    .sbm-fill { height:100%; background:var(--sage); border-radius:2px; }
+  </style>
+</head>
+<body>
+
+  <!-- SITE NAV -->
+  <div class="topbar">
+    <a href="{{ url_for('about') }}" class="tb-logo">Skill<em>2</em>Career</a>
+    <nav class="tb-nav">
+      <a href="{{ url_for('user_profile') }}" class="tb-link tb-link-active">
+        <span class="tb-av">{{ current_user.name[0].upper() }}</span> Profile
+      </a>
+      <div class="tb-divider"></div>
+      <a href="{{ url_for('profile') }}" class="tb-link">Skills</a>
+      <a href="{{ url_for('results') }}" class="tb-link">Results</a>
+      <a href="{{ url_for('compare') }}" class="tb-link">Compare</a>
+      <div class="tb-divider"></div>
+      <a href="{{ url_for('auth.logout') }}" class="tb-link">Log out</a>
+    </nav>
+  </div>
+
+  <div class="page">
+
+    <div class="page-eyebrow">Your Account</div>
+    <div class="page-title">My Profile</div>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% for category, message in messages %}
+        <div class="flash flash-{{ category }}">{{ message }}</div>
+      {% endfor %}
+    {% endwith %}
+
+    <div class="profile-grid">
+
+      <!-- LEFT COLUMN -->
+      <div>
+
+        <!-- Identity card -->
+        <div class="card">
+          <div class="avatar-block">
+            <div class="avatar">{{ current_user.name[0].upper() }}</div>
+            <div class="avatar-name">{{ current_user.name }}</div>
+            <div class="avatar-email">{{ current_user.email }}</div>
+            <div class="avatar-since">Member since {{ current_user.created_at.strftime('%B %Y') }}</div>
+          </div>
+          <div class="info-pills">
+            <div class="info-pill">
+              <span class="ip-label">Education</span>
+              <span class="ip-value">{{ current_user.education or '—' }}</span>
+            </div>
+            <div class="info-pill">
+              <span class="ip-label">Experience</span>
+              <span class="ip-value">{{ current_user.experience or 0 }} years</span>
+            </div>
+            <div class="info-pill">
+              <span class="ip-label">Analyses Run</span>
+              <span class="ip-value">{{ history|length }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Danger zone -->
+        <div class="card">
+          <div class="card-title">⚠️ Danger Zone</div>
+          <div class="danger-zone">
+            <div class="danger-title">Delete Account</div>
+            <div class="danger-desc">Permanently delete your account and all your analysis history. This cannot be undone.</div>
+            <form method="POST" onsubmit="return confirm('Are you sure? This will permanently delete your account.')">
+              <input type="hidden" name="action" value="delete_account">
+              <button type="submit" class="btn-danger">Delete my account</button>
+            </form>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- RIGHT COLUMN -->
+      <div>
+
+        <!-- Edit profile -->
+        <div class="card">
+          <div class="card-title">✏️ Edit Profile</div>
+          <form method="POST">
+            <input type="hidden" name="action" value="update">
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Full Name</label>
+                <input type="text" name="name" class="form-input" value="{{ current_user.name }}" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Email Address</label>
+                <input type="email" name="email" class="form-input" value="{{ current_user.email }}" required>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Education Level</label>
+                <select name="education" class="form-input">
+                  <option value="">Select</option>
+                  {% for opt in ["High School","Associate's","Bachelor's","Master's","PhD","Bootcamp / Self-taught"] %}
+                  <option value="{{ opt }}" {% if current_user.education == opt %}selected{% endif %}>{{ opt }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Years of Experience</label>
+                <select name="experience" class="form-input">
+                  {% for val, label in [('0','Student / No experience'),('1','Less than 1 year'),('2','1–2 years'),('3','3–5 years'),('6','6–10 years'),('10','10+ years')] %}
+                  <option value="{{ val }}" {% if current_user.experience|string == val %}selected{% endif %}>{{ label }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+            </div>
+            <button type="submit" class="btn" style="margin-top:4px;">Save Changes</button>
+          </form>
+        </div>
+
+        <!-- Change password -->
+        <div class="card">
+          <div class="card-title">🔒 Change Password</div>
+          <form method="POST">
+            <input type="hidden" name="action" value="change_password">
+            <div class="form-group">
+              <label class="form-label">Current Password</label>
+              <input type="password" name="old_password" class="form-input" placeholder="Enter current password" required>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">New Password</label>
+                <input type="password" name="new_password" class="form-input" placeholder="Min 6 characters" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Confirm New Password</label>
+                <input type="password" name="confirm_password" class="form-input" placeholder="Repeat new password" required>
+              </div>
+            </div>
+            <button type="submit" class="btn" style="margin-top:4px;">Update Password</button>
+          </form>
+        </div>
+
+        <!-- Recent Results -->
+        <div class="card">
+          <div class="card-title">📊 Recent Analyses</div>
+          {% if history %}
+            {% for item in history %}
+            <div class="result-item">
+              <div class="ri-left">
+                <div class="ri-date">{{ item.run_at.strftime('%d %b %Y · %I:%M %p') }}</div>
+                <div class="ri-career">{{ item.top_career }}</div>
+                {% set careers_data = item.careers %}
+                {% if careers_data %}
+                <div class="ri-skills">
+                  {% if careers_data[0].strong_skills %}
+                    {% for sk in careers_data[0].strong_skills[:3] %}
+                    <span style="display:inline-flex;align-items:center;gap:3px;font-size:10px;background:var(--sage-d);color:var(--sage3);padding:2px 8px;border-radius:100px;margin:1px;">✓ {{ sk.name }}</span>
+                    {% endfor %}
+                  {% endif %}
+                </div>
+                {% endif %}
+              </div>
+              <div class="ri-right">
+                <div class="ri-pct">{{ item.top_percent }}%</div>
+                <a href="{{ url_for('history_detail', history_id=item.id) }}" class="ri-view">View →</a>
+              </div>
+            </div>
+            {% endfor %}
+            <div style="margin-top:14px;">
+              <a href="{{ url_for('history') }}" style="font-size:13px; color:var(--sage); font-weight:600; text-decoration:none;">View all history →</a>
+            </div>
+          {% else %}
+            <div class="empty-results">
+              No analyses yet. <a href="{{ url_for('profile') }}" style="color:var(--sage); font-weight:700; text-decoration:none;">Run your first →</a>
+            </div>
+          {% endif %}
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>

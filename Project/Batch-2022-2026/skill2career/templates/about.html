@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About — Skill 2 Career</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,700;0,9..144,900;1,9..144,300;1,9..144,700&family=Lexend:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: var(--font);
+      background: var(--bg);
+      color: var(--text);
+      overflow-x: hidden;
+    }
+
+    /* ── NAV ── */
+    .site-nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 200;
+      height: 62px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 48px;
+      background: rgba(247,244,239,0.92);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid rgba(92,122,92,0.1);
+      transition: all .3s;
+    }
+    .sn-logo {
+      font-family: var(--serif);
+      font-size: 1.2rem;
+      font-weight: 900;
+      color: var(--text);
+      text-decoration: none;
+    }
+    .sn-logo em { color: var(--sage); font-style: italic; }
+    .sn-links { display: flex; align-items: center; gap: 6px; }
+    .sn-link {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--muted);
+      text-decoration: none;
+      padding: 7px 14px;
+      border-radius: 100px;
+      transition: all .2s;
+    }
+    .sn-link:hover { color: var(--sage); background: var(--sage-d); }
+    .sn-btn {
+      font-size: 13px;
+      font-weight: 700;
+      color: #fff;
+      background: var(--sage-g);
+      text-decoration: none;
+      padding: 9px 20px;
+      border-radius: 100px;
+      box-shadow: 0 4px 14px rgba(92,122,92,0.25);
+      transition: all .2s;
+    }
+    .sn-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(92,122,92,0.32); }
+    .sn-sep { width: 1px; height: 18px; background: rgba(0,0,0,0.08); margin: 0 4px; }
+
+    /* ── HERO — exactly 100vh, title + desc only ── */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 100px 48px 60px;
+      position: relative;
+    }
+
+    .hero-eyebrow {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--sage);
+      margin-bottom: 22px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .hero-eyebrow::before,
+    .hero-eyebrow::after {
+      content: '';
+      width: 24px;
+      height: 1.5px;
+      background: rgba(92,122,92,0.4);
+      display: inline-block;
+    }
+
+    .hero-title {
+      font-family: var(--serif);
+      font-size: clamp(2rem, 3.5vw, 3.2rem);
+      font-weight: 900;
+      color: var(--text);
+      line-height: 1.1;
+      letter-spacing: -0.01em;
+      margin-bottom: 20px;
+      max-width: 720px;
+    }
+    .hero-title em { color: var(--sage); font-style: italic; }
+
+    .hero-desc {
+      font-size: 15px;
+      color: var(--muted);
+      line-height: 1.8;
+      max-width: 520px;
+      margin-bottom: 36px;
+    }
+
+    .hero-btns {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .hero-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--sage-g);
+      color: #fff;
+      font-family: var(--font);
+      font-size: 15px;
+      font-weight: 700;
+      padding: 14px 32px;
+      border-radius: 100px;
+      text-decoration: none;
+      box-shadow: 0 6px 20px rgba(92,122,92,0.28);
+      transition: all .2s;
+    }
+    .hero-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 28px rgba(92,122,92,0.35); }
+    .hero-btn-ghost {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: transparent;
+      color: var(--sage);
+      font-family: var(--font);
+      font-size: 15px;
+      font-weight: 600;
+      padding: 14px 28px;
+      border-radius: 100px;
+      text-decoration: none;
+      border: 1.5px solid rgba(92,122,92,0.28);
+      transition: all .2s;
+    }
+    .hero-btn-ghost:hover { background: var(--sage-d); }
+
+    /* scroll hint */
+    .scroll-hint {
+      position: absolute;
+      bottom: 32px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      color: var(--dim);
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+    .scroll-arrow {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      border: 1.5px solid rgba(92,122,92,0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      color: var(--sage);
+      animation: bounce 2s ease-in-out infinite;
+    }
+    @keyframes bounce {
+      0%,100% { transform: translateY(0); }
+      50% { transform: translateY(6px); }
+    }
+
+    /* ── SCROLL CONTENT ── */
+    .content { background: var(--bg); }
+
+    /* Stats */
+    .stats-section {
+      padding: 80px 48px 64px;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+    }
+    .stat-card {
+      background: rgba(92,122,92,0.05);
+      border: 1px solid rgba(92,122,92,0.1);
+      border-radius: 16px;
+      padding: 28px 20px;
+      text-align: center;
+    }
+    .stat-n {
+      font-family: var(--serif);
+      font-size: 2.6rem;
+      font-weight: 900;
+      color: var(--sage);
+      line-height: 1;
+      margin-bottom: 8px;
+    }
+    .stat-l {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--muted);
+    }
+
+    /* divider */
+    .section-divider {
+      width: 100%;
+      height: 1px;
+      background: rgba(92,122,92,0.1);
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    /* How it works */
+    .how-section {
+      padding: 64px 48px 80px;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+    .how-title {
+      font-family: var(--serif);
+      font-size: 2rem;
+      font-weight: 900;
+      color: var(--text);
+      margin-bottom: 10px;
+    }
+    .how-sub {
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.7;
+      max-width: 600px;
+      margin-bottom: 40px;
+    }
+    .steps-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+    .step-card {
+      background: rgba(92,122,92,0.04);
+      border: 1px solid rgba(92,122,92,0.1);
+      border-radius: 18px;
+      padding: 28px 24px;
+    }
+    .step-num {
+      font-family: var(--serif);
+      font-size: 3rem;
+      font-weight: 900;
+      color: var(--sage);
+      opacity: 0.18;
+      line-height: 1;
+      margin-bottom: 14px;
+    }
+    .step-title {
+      font-family: var(--serif);
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 10px;
+    }
+    .step-desc {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.75;
+    }
+
+    /* CTA section */
+    .cta-section {
+      padding: 64px 48px 80px;
+      text-align: center;
+      border-top: 1px solid rgba(92,122,92,0.1);
+    }
+    .cta-title {
+      font-family: var(--serif);
+      font-size: 2rem;
+      font-weight: 900;
+      color: var(--text);
+      margin-bottom: 10px;
+    }
+    .cta-title em { color: var(--sage); font-style: italic; }
+    .cta-sub {
+      font-size: 14px;
+      color: var(--muted);
+      margin-bottom: 32px;
+    }
+
+    @media(max-width: 800px) {
+      .stats-grid { grid-template-columns: repeat(2, 1fr); }
+      .steps-grid { grid-template-columns: 1fr; }
+      .site-nav { padding: 0 24px; }
+      .hero { padding: 90px 24px 60px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav class="site-nav">
+    <a href="{{ url_for('about') }}" class="sn-logo">Skill<em>2</em>Career</a>
+    <div class="sn-links">
+      {% if current_user.is_authenticated %}
+        <a href="{{ url_for('profile') }}" class="sn-link">Skills</a>
+        <a href="{{ url_for('results') }}" class="sn-link">Results</a>
+        <div class="sn-sep"></div>
+        <a href="{{ url_for('auth.logout') }}" class="sn-link">Log out</a>
+      {% else %}
+        <a href="{{ url_for('auth.login') }}" class="sn-link">Log in</a>
+        <a href="{{ url_for('auth.signup') }}" class="sn-btn">Get Started Free →</a>
+      {% endif %}
+    </div>
+  </nav>
+
+  <!-- HERO — only title + desc visible on load -->
+  <section class="hero">
+    <div class="hero-eyebrow">About Skill 2 Career</div>
+    <h1 class="hero-title">
+      Discover your <em>ideal career</em><br>through your skills
+    </h1>
+    <p class="hero-desc">
+      Skill 2 Career is an AI-powered platform that analyzes your skill profile across 8 domains and matches you to the most relevant careers — with personalized gap analysis and a learning roadmap to get you there.
+    </p>
+    <div class="hero-btns">
+      {% if current_user.is_authenticated %}
+        <a href="{{ url_for('profile') }}" class="hero-btn">Start Analysis →</a>
+      {% else %}
+        <a href="{{ url_for('auth.signup') }}" class="hero-btn">Get Started Free →</a>
+        <a href="{{ url_for('auth.login') }}" class="hero-btn-ghost">Log in</a>
+      {% endif %}
+    </div>
+    <div class="scroll-hint">
+      <div class="scroll-arrow">↓</div>
+      Scroll to explore
+    </div>
+  </section>
+
+  <!-- SCROLL CONTENT -->
+  <div class="content">
+
+    <!-- Stats -->
+    <div class="stats-section">
+      <div class="stats-grid">
+        <div class="stat-card"><div class="stat-n">62</div><div class="stat-l">Careers</div></div>
+        <div class="stat-card"><div class="stat-n">108</div><div class="stat-l">Skills Mapped</div></div>
+        <div class="stat-card"><div class="stat-n">8</div><div class="stat-l">Domains</div></div>
+        <div class="stat-card"><div class="stat-n">99%</div><div class="stat-l">Model Accuracy</div></div>
+      </div>
+    </div>
+
+    <div class="section-divider"></div>
+
+    <!-- How it works -->
+    <div class="how-section">
+      <div class="how-title">How it works</div>
+      <div class="how-sub">Rate your skills honestly across 8 domains — Technology, Business, Healthcare, Law, Design, Education, Trades, and Soft Skills. Our AI does the rest.</div>
+      <div class="steps-grid">
+        <div class="step-card">
+          <div class="step-num">01</div>
+          <div class="step-title">Rate Your Skills</div>
+          <div class="step-desc">Rate 108 skills across 8 domains from 0 (none) to 5 (expert). Takes about 5 minutes and the more honest you are, the better your results.</div>
+        </div>
+        <div class="step-card">
+          <div class="step-num">02</div>
+          <div class="step-title">AI Analyzes</div>
+          <div class="step-desc">Our hybrid AI — Logistic Regression (60%) + Cosine Similarity (40%) — maps your profile to the most relevant career paths across all domains.</div>
+        </div>
+        <div class="step-card">
+          <div class="step-num">03</div>
+          <div class="step-title">Get Your Roadmap</div>
+          <div class="step-desc">See your top 5 career matches with readiness scores, strength & gap analysis, and a personalized 3 & 6 month learning roadmap.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CTA -->
+    <div class="cta-section">
+      <div class="cta-title">Ready to find your <em>ideal career?</em></div>
+      <div class="cta-sub">Free forever — no credit card needed. Results in 60 seconds.</div>
+      {% if current_user.is_authenticated %}
+        <a href="{{ url_for('profile') }}" class="hero-btn">Start Analysis →</a>
+      {% else %}
+        <a href="{{ url_for('auth.signup') }}" class="hero-btn">Get Started Free →</a>
+      {% endif %}
+    </div>
+
+  </div>
+
+</body>
+</html>
