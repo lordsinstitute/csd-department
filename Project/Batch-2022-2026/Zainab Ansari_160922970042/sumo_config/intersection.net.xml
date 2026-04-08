@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<net version="1.16" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    
+    <!-- Nodes -->
+    <node id="center" type="traffic_light" x="0.00" y="0.00"/>
+    <node id="north" type="priority" x="0.00" y="100.00"/>
+    <node id="south" type="priority" x="0.00" y="-100.00"/>
+    <node id="east" type="priority" x="100.00" y="0.00"/>
+    <node id="west" type="priority" x="-100.00" y="0.00"/>
+    
+    <!-- Edges (Incoming) -->
+    <edge id="north" from="north" to="center" priority="2" numLanes="2">
+        <lane id="north_0" index="0" speed="13.89" length="100.00"/>
+        <lane id="north_1" index="1" speed="13.89" length="100.00"/>
+    </edge>
+    
+    <edge id="south" from="south" to="center" priority="2" numLanes="2">
+        <lane id="south_0" index="0" speed="13.89" length="100.00"/>
+        <lane id="south_1" index="1" speed="13.89" length="100.00"/>
+    </edge>
+    
+    <edge id="east" from="east" to="center" priority="2" numLanes="2">
+        <lane id="east_0" index="0" speed="13.89" length="100.00"/>
+        <lane id="east_1" index="1" speed="13.89" length="100.00"/>
+    </edge>
+    
+    <edge id="west" from="west" to="center" priority="2" numLanes="2">
+        <lane id="west_0" index="0" speed="13.89" length="100.00"/>
+        <lane id="west_1" index="1" speed="13.89" length="100.00"/>
+    </edge>
+    
+    <!-- Internal Edges (Intersection) -->
+    <edge id=":center_0" function="internal">
+        <lane id=":center_0_0" index="0" speed="13.89" length="0.50"/>
+    </edge>
+    
+    <!-- Traffic Light Logic -->
+    <tlLogic id="center" type="static" programID="0" offset="0">
+        <!-- Phase 0: NS Green -->
+        <phase duration="31" state="GGrrGGrr"/>
+        <!-- Phase 1: NS Yellow -->
+        <phase duration="3" state="yyrryyrr"/>
+        <!-- Phase 2: EW Green -->
+        <phase duration="31" state="rrGGrrGG"/>
+        <!-- Phase 3: EW Yellow -->
+        <phase duration="3" state="rryyrryy"/>
+    </tlLogic>
+    
+    <!-- Connections -->
+    <connection from="north" to=":center_0" fromLane="0" toLane="0"/>
+    <connection from="north" to=":center_0" fromLane="1" toLane="0"/>
+    <connection from="south" to=":center_0" fromLane="0" toLane="0"/>
+    <connection from="south" to=":center_0" fromLane="1" toLane="0"/>
+    <connection from="east" to=":center_0" fromLane="0" toLane="0"/>
+    <connection from="east" to=":center_0" fromLane="1" toLane="0"/>
+    <connection from="west" to=":center_0" fromLane="0" toLane="0"/>
+    <connection from="west" to=":center_0" fromLane="1" toLane="0"/>
+    
+</net>

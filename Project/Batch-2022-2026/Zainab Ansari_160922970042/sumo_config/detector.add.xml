@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<additional xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    
+    <!-- Induction Loop Detectors -->
+    <inductionLoop id="det_north_0" lane="north_0" pos="50" freq="60" file="NUL"/>
+    <inductionLoop id="det_north_1" lane="north_1" pos="50" freq="60" file="NUL"/>
+    <inductionLoop id="det_south_0" lane="south_0" pos="50" freq="60" file="NUL"/>
+    <inductionLoop id="det_south_1" lane="south_1" pos="50" freq="60" file="NUL"/>
+    <inductionLoop id="det_east_0" lane="east_0" pos="50" freq="60" file="NUL"/>
+    <inductionLoop id="det_east_1" lane="east_1" pos="50" freq="60" file="NUL"/>
+    <inductionLoop id="det_west_0" lane="west_0" pos="50" freq="60" file="NUL"/>
+    <inductionLoop id="det_west_1" lane="west_1" pos="50" freq="60" file="NUL"/>
+    
+</additional>
