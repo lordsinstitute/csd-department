@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Career Report — {{ name }}</title>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,600;0,9..144,900;1,9..144,600&family=Lexend:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    html { font-size: 14px; }
+
+    :root {
+      --sage:    #5c7a5c;
+      --sage2:   #7a9e7a;
+      --sage-d:  rgba(92,122,92,0.08);
+      --sage-b:  rgba(92,122,92,0.18);
+      --rust:    #b85c38;
+      --text:    #1e2a1e;
+      --muted:   rgba(30,42,30,0.55);
+      --dim:     rgba(30,42,30,0.2);
+      --border:  rgba(92,122,92,0.15);
+      --border2: rgba(92,122,92,0.28);
+      --serif:   'Fraunces', Georgia, serif;
+      --font:    'Lexend', sans-serif;
+    }
+
+    body {
+      font-family: var(--font);
+      background: #fff;
+      color: var(--text);
+      padding: 0;
+    }
+
+    /* ── Print button (hidden when printing) ── */
+    .print-bar {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      background: var(--sage); color: #fff;
+      padding: 14px 40px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .print-bar-title {
+      font-family: var(--serif); font-size: 1rem; font-weight: 700;
+      color: rgba(255,255,255,0.9);
+    }
+    .print-bar-btns { display: flex; gap: 10px; }
+    .print-btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 9px 22px; background: #fff; color: var(--sage);
+      font-family: var(--font); font-size: 13px; font-weight: 700;
+      border: none; border-radius: 100px; cursor: pointer;
+      transition: all 0.2s;
+    }
+    .print-btn:hover { background: var(--sage-d); color: #fff; background: rgba(255,255,255,0.85); }
+    .close-btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 9px 22px; background: transparent; color: rgba(255,255,255,0.8);
+      font-family: var(--font); font-size: 13px; font-weight: 600;
+      border: 1.5px solid rgba(255,255,255,0.35); border-radius: 100px; cursor: pointer;
+      transition: all 0.2s; text-decoration: none;
+    }
+    .close-btn:hover { background: rgba(255,255,255,0.1); color: #fff; }
+
+    /* ── Page layout ── */
+    .report { max-width: 820px; margin: 0 auto; padding: 80px 48px 60px; }
+
+    /* ── Header ── */
+    .report-header {
+      display: flex; align-items: flex-start; justify-content: space-between;
+      padding-bottom: 28px; margin-bottom: 32px;
+      border-bottom: 3px solid var(--sage);
+    }
+    .rh-left {}
+    .report-eyebrow {
+      font-size: 11px; font-weight: 700; letter-spacing: 0.12em;
+      text-transform: uppercase; color: var(--sage); margin-bottom: 8px;
+    }
+    .report-title {
+      font-family: var(--serif); font-size: 2.2rem; font-weight: 900;
+      color: var(--text); line-height: 1.05; margin-bottom: 6px;
+    }
+    .report-title em { font-style: italic; color: var(--sage); }
+    .report-meta { font-size: 12px; color: var(--muted); margin-top: 8px; }
+    .report-logo {
+      font-family: var(--serif); font-size: 1.1rem; font-weight: 900;
+      color: var(--sage); text-align: right; opacity: 0.7;
+    }
+    .report-logo span { display: block; font-size: 10px; font-weight: 400; color: var(--muted); margin-top: 3px; font-family: var(--font); }
+
+    /* ── Section titles ── */
+    .sec-title {
+      font-family: var(--serif); font-size: 1.1rem; font-weight: 900;
+      color: var(--text); margin-bottom: 16px;
+      display: flex; align-items: center; gap: 12px;
+    }
+    .sec-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+    .sec-title .sec-num {
+      width: 26px; height: 26px; border-radius: 50%; background: var(--sage);
+      color: #fff; font-size: 12px; font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+
+    /* ── Summary stats strip ── */
+    .stats-strip {
+      display: grid; grid-template-columns: repeat(4, 1fr);
+      gap: 12px; margin-bottom: 36px;
+    }
+    .stat-box {
+      background: var(--sage-d); border: 1px solid var(--border2);
+      border-radius: 12px; padding: 16px 18px; text-align: center;
+    }
+    .stat-box .sb-n {
+      font-family: var(--serif); font-size: 2rem; font-weight: 900;
+      color: var(--sage); line-height: 1;
+    }
+    .stat-box .sb-l {
+      font-size: 11px; color: var(--muted); font-weight: 600;
+      text-transform: uppercase; letter-spacing: 0.06em; margin-top: 5px;
+    }
+
+    /* ── Career cards ── */
+    .career-section { margin-bottom: 36px; }
+
+    .career-block {
+      border: 1px solid var(--border); border-radius: 16px;
+      overflow: hidden; margin-bottom: 16px;
+      page-break-inside: avoid;
+    }
+    .career-block.top-match {
+      border-color: var(--sage); border-width: 2px;
+    }
+
+    .cb-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 18px 24px;
+      background: linear-gradient(135deg, var(--sage-d), transparent);
+      border-bottom: 1px solid var(--border);
+    }
+    .cb-header.top { background: linear-gradient(135deg, rgba(92,122,92,0.12), transparent); }
+
+    .cb-rank-name { display: flex; align-items: center; gap: 14px; }
+    .cb-rank {
+      font-family: var(--serif); font-size: 1.8rem; font-weight: 900;
+      color: var(--dim); line-height: 1; min-width: 32px;
+    }
+    .cb-name {
+      font-family: var(--serif); font-size: 1.25rem; font-weight: 900;
+      color: var(--text); line-height: 1.1;
+    }
+    .cb-badge {
+      font-size: 10px; font-weight: 700; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--sage);
+      background: rgba(92,122,92,0.12); border: 1px solid var(--border2);
+      padding: 3px 10px; border-radius: 100px; margin-top: 4px;
+      display: inline-block;
+    }
+
+    .cb-scores { display: flex; gap: 20px; align-items: center; }
+    .cb-score-item { text-align: center; }
+    .cb-score-n {
+      font-family: var(--serif); font-size: 1.5rem; font-weight: 900;
+      color: var(--sage); line-height: 1;
+    }
+    .cb-score-l { font-size: 10px; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; margin-top: 2px; }
+
+    /* progress bar */
+    .cb-bar-wrap { width: 90px; height: 5px; background: var(--sage-d); border-radius: 3px; overflow: hidden; margin-top: 6px; }
+    .cb-bar { height: 100%; background: linear-gradient(90deg, #5c7a5c, #7a9e7a); border-radius: 3px; }
+
+    .cb-body { padding: 18px 24px; }
+    .cb-explanation { font-size: 13px; color: var(--muted); line-height: 1.8; margin-bottom: 14px; }
+
+    .cb-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 14px; }
+    .cb-col-title {
+      font-size: 10px; font-weight: 700; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--muted); margin-bottom: 8px;
+    }
+    .tag-wrap { display: flex; flex-wrap: wrap; gap: 4px; }
+    .s-tag {
+      display: inline-flex; align-items: center; gap: 4px;
+      font-size: 11px; font-weight: 600; padding: 3px 10px;
+      border-radius: 100px;
+    }
+    .t-good { background:rgba(34,197,94,0.08); color:#16a34a; border:1px solid rgba(34,197,94,0.2); }
+    .t-miss { background:rgba(220,38,38,0.08); color:#dc2626; border:1px solid rgba(220,38,38,0.2); }
+    .t-weak { background:rgba(184,92,56,0.10); color:#b85c38; border:1px solid rgba(184,92,56,0.2); }
+
+    /* roadmap */
+    .roadmap-wrap { margin-top: 14px; }
+    .rm-phase {
+      font-size: 10px; font-weight: 700; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--sage); margin-bottom: 6px; margin-top: 12px;
+    }
+    .rm-item {
+      display: flex; align-items: flex-start; gap: 8px;
+      font-size: 12px; color: var(--muted); line-height: 1.7;
+      padding: 4px 0; border-bottom: 1px solid var(--border);
+    }
+    .rm-item:last-child { border-bottom: none; }
+    .rm-dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--sage); flex-shrink: 0; margin-top: 5px;
+    }
+
+    /* ── Footer ── */
+    .report-footer {
+      margin-top: 48px; padding-top: 20px;
+      border-top: 1px solid var(--border);
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .rf-left { font-size: 11px; color: var(--muted); }
+    .rf-right { font-family: var(--serif); font-size: 13px; color: var(--sage); font-weight: 700; }
+
+    /* ── Print styles ── */
+    @media print {
+      .print-bar { display: none !important; }
+      .report { padding: 32px 40px 40px; margin: 0; max-width: 100%; }
+      body { background: #fff; }
+      .career-block { page-break-inside: avoid; }
+      .stats-strip { page-break-inside: avoid; }
+      @page {
+        margin: 15mm 12mm;
+        size: A4;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Print bar (hidden on print) -->
+  <div class="print-bar">
+    <div class="print-bar-title">📄 Career Analysis Report — {{ name }}</div>
+    <div class="print-bar-btns">
+      <button class="print-btn" onclick="window.print()">
+        🖨️ Print / Save as PDF
+      </button>
+      <a href="{{ url_for('dashboard_get') }}" class="close-btn">✕ Close</a>
+    </div>
+  </div>
+
+  <div class="report">
+
+    <!-- Header -->
+    <div class="report-header">
+      <div class="rh-left">
+        <div class="report-eyebrow">AI Career Intelligence Report</div>
+        <div class="report-title">Career Analysis<br>for <em>{{ name }}</em></div>
+        <div class="report-meta">
+          Generated on {{ date }}
+          &nbsp;·&nbsp; {{ careers|length }} careers matched
+          &nbsp;·&nbsp; Powered by Skill 2 Career AI
+        </div>
+      </div>
+      <div class="report-logo">
+        Skill 2 Career
+        <span>AI-Powered Career Matching</span>
+      </div>
+    </div>
+
+    <!-- Stats strip -->
+    <div class="stats-strip">
+      <div class="stat-box">
+        <div class="sb-n">{{ careers[0].match_percent }}%</div>
+        <div class="sb-l">Top Match</div>
+      </div>
+      <div class="stat-box">
+        <div class="sb-n">{{ careers|length }}</div>
+        <div class="sb-l">Careers Matched</div>
+      </div>
+      <div class="stat-box">
+        <div class="sb-n">{{ careers[0].missing_core|length }}</div>
+        <div class="sb-l">Core Gaps</div>
+      </div>
+      <div class="stat-box">
+        <div class="sb-n">{{ careers[0].strong_skills|length }}</div>
+        <div class="sb-l">Strong Skills</div>
+      </div>
+    </div>
+
+    <!-- Career results -->
+    <div class="career-section">
+      <div class="sec-title">
+        <span class="sec-num">1</span>
+        Your Top Career Matches
+      </div>
+
+      {% for career in careers %}
+      <div class="career-block {% if loop.first %}top-match{% endif %}">
+
+        <div class="cb-header {% if loop.first %}top{% endif %}">
+          <div class="cb-rank-name">
+            <div class="cb-rank">#{{ loop.index }}</div>
+            <div>
+              <div class="cb-name">{{ career.title }}</div>
+              {% if loop.first %}<span class="cb-badge">⭐ Best Match</span>{% endif %}
+            </div>
+          </div>
+          <div class="cb-scores">
+            <div class="cb-score-item">
+              <div class="cb-score-n">{{ career.match_percent }}%</div>
+              <div class="cb-bar-wrap"><div class="cb-bar" style="width:{{ career.match_percent }}%"></div></div>
+              <div class="cb-score-l">Readiness</div>
+            </div>
+            <div class="cb-score-item">
+              <div class="cb-score-n">{{ career.similarity }}</div>
+              <div class="cb-bar-wrap"><div class="cb-bar" style="width:{{ (career.similarity * 100)|round }}%"></div></div>
+              <div class="cb-score-l">Similarity</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="cb-body">
+          <p class="cb-explanation">{{ career.explanation }}</p>
+
+          <div class="cb-row">
+            <div>
+              <div class="cb-col-title">✗ Missing Core Skills</div>
+              <div class="tag-wrap">
+                {% if career.missing_core %}
+                  {% for s in career.missing_core %}
+                    <span class="s-tag t-miss">{{ s.replace('_',' ').title() }}</span>
+                  {% endfor %}
+                {% else %}
+                  <span class="s-tag t-good">✓ None — fully ready</span>
+                {% endif %}
+              </div>
+            </div>
+            <div>
+              <div class="cb-col-title">△ Skills to Strengthen</div>
+              <div class="tag-wrap">
+                {% if career.weak_supporting %}
+                  {% for s in career.weak_supporting %}
+                    <span class="s-tag t-weak">{{ s.replace('_',' ').title() }}</span>
+                  {% endfor %}
+                {% else %}
+                  <span class="s-tag t-good">✓ None</span>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+
+          {% if career.strong_skills %}
+          <div style="margin-bottom:14px;">
+            <div class="cb-col-title">✓ Your Strengths for this Role</div>
+            <div class="tag-wrap">
+              {% for sk in career.strong_skills %}
+                <span class="s-tag t-good">{{ sk.name }} ({{ sk.score }}/5)</span>
+              {% endfor %}
+            </div>
+          </div>
+          {% endif %}
+
+          {% if career.roadmap %}
+          <div class="roadmap-wrap">
+            <div class="cb-col-title">🗺 Learning Roadmap</div>
+            {% if career.roadmap['3_month'] %}
+              <div class="rm-phase">3-Month Goals</div>
+              {% for item in career.roadmap['3_month'] %}
+                <div class="rm-item"><span class="rm-dot"></span>{{ item }}</div>
+              {% endfor %}
+            {% endif %}
+            {% if career.roadmap['6_month'] %}
+              <div class="rm-phase">6-Month Goals</div>
+              {% for item in career.roadmap['6_month'] %}
+                <div class="rm-item"><span class="rm-dot"></span>{{ item }}</div>
+              {% endfor %}
+            {% endif %}
+          </div>
+          {% endif %}
+
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+
+    <!-- Footer -->
+    <div class="report-footer">
+      <div class="rf-left">
+        Generated by Skill 2 Career AI &nbsp;·&nbsp; {{ date }}<br>
+        Results are based on AI skill-matching across 62 career profiles.
+      </div>
+      <div class="rf-right">Skill 2 Career</div>
+    </div>
+
+  </div>
+
+</body>
+</html>

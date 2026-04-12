@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Skill 2 Career — Find Your Path</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,600;0,9..144,900;1,9..144,300;1,9..144,600;1,9..144,900&family=Lexend:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+
+  <!-- HERO -->
+  <section class="hero" style="display:flex;align-items:center;justify-content:center;text-align:center;min-height:92vh;padding:90px 32px;background:var(--sage);position:relative;overflow:hidden;">
+    <div style="position:absolute;width:500px;height:500px;border-radius:50%;background:rgba(255,255,255,0.05);bottom:-180px;right:-120px;"></div>
+    <div style="position:absolute;width:300px;height:300px;border-radius:50%;background:rgba(255,255,255,0.04);top:60px;left:-80px;"></div>
+    <div style="position:relative;z-index:1;max-width:720px;">
+      <div class="eyebrow" style="color:rgba(255,255,255,0.75);justify-content:center;">AI Career Intelligence</div>
+      <h1 style="color:#fff;font-size:clamp(3.5rem,7vw,6.5rem);margin-bottom:24px;">Discover<br>Your <em>Perfect</em><br>Path</h1>
+      <div class="sage-line center" style="background:rgba(255,255,255,0.4);"></div>
+      <p style="font-size:18px;color:rgba(255,255,255,0.75);line-height:1.8;margin-bottom:44px;max-width:520px;margin-left:auto;margin-right:auto;">Vector-based AI matches your skills to 50+ career paths across 8 industries — with ranked results, gap analysis, and a personalized roadmap. In 60 seconds.</p>
+      <div class="btns" style="justify-content:center;">
+        <a href="{{ url_for('profile') }}" class="hero-btn-white">
+          Begin Analysis
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+        <a href="#how" class="hero-btn-ghost">How it works</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURES -->
+  <div class="feat-strip">
+    <div class="feat-pill">🧠 Cosine Similarity AI</div>
+    <div class="feat-pill">🗺️ 50+ Career Paths</div>
+    <div class="feat-pill">📐 120+ Skills Mapped</div>
+    <div class="feat-pill">🌿 8 Industry Domains</div>
+    <div class="feat-pill">🎯 Skill Gap Analysis</div>
+    <div class="feat-pill">⚡ Results in 60 Seconds</div>
+  </div>
+
+  <!-- HOW IT WORKS -->
+  <section id="how" class="how-wrap">
+    <div class="how-header">
+      <div>
+        <div class="tag"><span class="dot"></span> Under the Hood</div>
+        <div class="sage-line"></div>
+        <h2>How the AI<br>engine works</h2>
+      </div>
+      <p>Three intelligent stages transform your raw skill ratings into ranked career matches with personalized guidance. No guesswork — pure mathematics.</p>
+    </div>
+    <div class="how-cards">
+      <div class="how-card">
+        <div class="hw-num">1</div>
+        <div class="hw-body">
+          <h3>Skill Vectorization</h3>
+          <p>Your ratings across 120+ skills are normalized to a 0–1 scale and arranged into a precise mathematical vector — ready for AI comparison.</p>
+        </div>
+      </div>
+      <div class="how-card">
+        <div class="hw-num">2</div>
+        <div class="hw-body">
+          <h3>Cosine Similarity Matching</h3>
+          <p>Your vector is compared against 50+ career profiles using cosine similarity — the same method used in modern NLP and recommendation systems.</p>
+        </div>
+      </div>
+      <div class="how-card">
+        <div class="hw-num">3</div>
+        <div class="hw-body">
+          <h3>Gap Analysis + Roadmap</h3>
+          <p>Core and supporting skills are scored separately. Gaps are identified and a career-specific 3 and 6 month learning roadmap is generated for you.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STATS -->
+  <div class="stats-band">
+    <div class="stat"><span class="stat-n">50+</span><div class="stat-l">Career Paths</div></div>
+    <div class="stat"><span class="stat-n">120+</span><div class="stat-l">Skills Mapped</div></div>
+    <div class="stat"><span class="stat-n">8</span><div class="stat-l">Industry Domains</div></div>
+    <div class="stat"><span class="stat-n">60s</span><div class="stat-l">Time to Results</div></div>
+  </div>
+
+  <!-- FINAL CTA -->
+  <section class="cta-section">
+    <div class="cta-left">
+      <div class="tag"><span class="dot"></span> Ready to start?</div>
+      <div class="sage-line"></div>
+      <h2>Find your<br>career match</h2>
+    </div>
+    <div class="cta-right">
+      <p>No account needed. No signup. Rate your skills and get your ranked career matches with a personalized roadmap — in under 60 seconds.</p>
+      <a href="{{ url_for('profile') }}" class="btn">
+        Begin Analysis
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </a>
+    </div>
+  </section>
+
+</body>
+</html>

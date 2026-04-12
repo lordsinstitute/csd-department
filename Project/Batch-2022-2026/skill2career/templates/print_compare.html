@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Career Comparison Report — {{ name }}</title>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,600;0,9..144,900;1,9..144,600&family=Lexend:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    html { font-size: 14px; }
+
+    :root {
+      --sage:    #5c7a5c;
+      --sage2:   #7a9e7a;
+      --sage-d:  rgba(92,122,92,0.08);
+      --sage-b:  rgba(92,122,92,0.18);
+      --rust:    #b85c38;
+      --rust-d:  rgba(184,92,56,0.08);
+      --text:    #1e2a1e;
+      --muted:   rgba(30,42,30,0.55);
+      --dim:     rgba(30,42,30,0.2);
+      --border:  rgba(92,122,92,0.15);
+      --border2: rgba(92,122,92,0.28);
+      --serif:   'Fraunces', Georgia, serif;
+      --font:    'Lexend', sans-serif;
+    }
+
+    body { font-family: var(--font); background: #fff; color: var(--text); }
+
+    /* ── Print bar ── */
+    .print-bar {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      background: var(--sage); color: #fff;
+      padding: 14px 40px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .print-bar-title { font-family: var(--serif); font-size: 1rem; font-weight: 700; color: rgba(255,255,255,0.9); }
+    .print-bar-btns  { display: flex; gap: 10px; }
+    .print-btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 9px 22px; background: #fff; color: var(--sage);
+      font-family: var(--font); font-size: 13px; font-weight: 700;
+      border: none; border-radius: 100px; cursor: pointer; transition: all 0.2s;
+    }
+    .print-btn:hover { background: rgba(255,255,255,0.85); }
+    .close-btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 9px 22px; background: transparent; color: rgba(255,255,255,0.8);
+      font-family: var(--font); font-size: 13px; font-weight: 600;
+      border: 1.5px solid rgba(255,255,255,0.35); border-radius: 100px;
+      cursor: pointer; transition: all 0.2s; text-decoration: none;
+    }
+    .close-btn:hover { background: rgba(255,255,255,0.1); color: #fff; }
+
+    /* ── Page ── */
+    .report { max-width: 860px; margin: 0 auto; padding: 80px 48px 60px; }
+
+    /* ── Header ── */
+    .report-header {
+      display: flex; align-items: flex-start; justify-content: space-between;
+      padding-bottom: 28px; margin-bottom: 32px;
+      border-bottom: 3px solid var(--sage);
+    }
+    .report-eyebrow { font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--sage); margin-bottom: 8px; }
+    .report-title   { font-family: var(--serif); font-size: 2.2rem; font-weight: 900; color: var(--text); line-height: 1.05; margin-bottom: 6px; }
+    .report-title em { font-style: italic; color: var(--sage); }
+    .report-meta    { font-size: 12px; color: var(--muted); margin-top: 8px; }
+    .report-logo    { font-family: var(--serif); font-size: 1.1rem; font-weight: 900; color: var(--sage); text-align: right; opacity: 0.7; }
+    .report-logo span { display: block; font-size: 10px; font-weight: 400; color: var(--muted); margin-top: 3px; font-family: var(--font); }
+
+    /* ── Section title ── */
+    .sec-title {
+      font-family: var(--serif); font-size: 1.1rem; font-weight: 900;
+      color: var(--text); margin-bottom: 18px;
+      display: flex; align-items: center; gap: 12px;
+    }
+    .sec-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+    .sec-num {
+      width: 26px; height: 26px; border-radius: 50%; background: var(--sage);
+      color: #fff; font-size: 12px; font-weight: 700;
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+
+    /* ── Selector row ── */
+    .selector-row {
+      display: flex; gap: 14px; align-items: center;
+      margin-bottom: 28px; flex-wrap: wrap;
+    }
+    .sel-wrap { display: flex; flex-direction: column; gap: 6px; }
+    .sel-label { font-size: 11px; font-weight: 700; color: var(--muted); letter-spacing: 0.09em; text-transform: uppercase; }
+    .compare-select {
+      padding: 10px 16px; background: var(--sage-d); border: 1.5px solid var(--border2);
+      border-radius: 10px; color: var(--text); font-family: var(--font);
+      font-size: 13px; font-weight: 600; outline: none; cursor: pointer; min-width: 200px;
+    }
+    .compare-select:focus { border-color: var(--sage); }
+    .vs-label { font-size: 22px; padding-top: 22px; }
+    .update-btn {
+      padding: 10px 22px; background: var(--sage); color: #fff;
+      font-family: var(--font); font-size: 13px; font-weight: 700;
+      border: none; border-radius: 100px; cursor: pointer;
+      margin-top: 22px; transition: all 0.2s;
+    }
+    .update-btn:hover { background: #4a6349; }
+
+    /* ── Side by side cards ── */
+    .compare-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 16px; margin-bottom: 28px;
+    }
+    .cmp-card {
+      border: 1.5px solid var(--border2); border-radius: 16px;
+      padding: 24px; page-break-inside: avoid;
+    }
+    .cmp-card.card-a { border-color: var(--sage); }
+    .card-label {
+      font-size: 10px; font-weight: 700; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--sage);
+      background: var(--sage-d); border: 1px solid var(--border2);
+      padding: 3px 10px; border-radius: 100px; margin-bottom: 12px;
+      display: inline-block;
+    }
+    .cmp-name { font-family: var(--serif); font-size: 1.4rem; font-weight: 900; color: var(--text); margin-bottom: 10px; line-height: 1.1; }
+
+    /* ring */
+    .ring-wrap { position: relative; width: 90px; height: 90px; margin: 12px auto; }
+    .ring-wrap svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+    .r-bg   { fill: none; stroke: rgba(92,122,92,0.1); stroke-width: 6; }
+    .r-fill { fill: none; stroke: #5c7a5c; stroke-width: 6; stroke-linecap: round; }
+    .r-label { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+    .r-pct { font-family: var(--serif); font-size: 1.4rem; font-weight: 900; color: var(--sage); line-height: 1; }
+    .r-sub  { font-size: 10px; color: var(--muted); margin-top: 2px; font-weight: 500; }
+
+    .cmp-expl { font-size: 12px; color: var(--muted); line-height: 1.8; margin-top: 10px; }
+
+    /* ── Metrics table ── */
+    .metrics-section { margin-bottom: 28px; page-break-inside: avoid; }
+    .metrics-table { width: 100%; border-collapse: collapse; }
+    .metrics-table th {
+      font-size: 11px; font-weight: 700; letter-spacing: 0.08em;
+      text-transform: uppercase; color: var(--muted);
+      padding: 10px 16px; border-bottom: 2px solid var(--border);
+      text-align: center;
+    }
+    .metrics-table th.metric-col { text-align: center; color: var(--sage); }
+    .metrics-table td {
+      padding: 10px 16px; border-bottom: 1px solid var(--border);
+      text-align: center; font-size: 13px;
+    }
+    .metrics-table td.metric-label {
+      font-size: 11px; font-weight: 700; color: var(--muted);
+      letter-spacing: 0.06em; text-transform: uppercase; text-align: center;
+    }
+    .winner { color: var(--sage); font-family: var(--serif); font-size: 1rem; font-weight: 900; }
+    .loser  { color: var(--dim); font-size: 0.95rem; }
+    .verdict-row td {
+      background: var(--sage-d); font-size: 13px; font-weight: 600;
+      color: var(--text); padding: 12px 16px; border-radius: 8px;
+    }
+
+    /* ── Gaps section ── */
+    .gaps-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 16px; margin-bottom: 28px;
+    }
+    .gap-col { border: 1px solid var(--border); border-radius: 12px; padding: 16px; page-break-inside: avoid; }
+    .gap-col-title {
+      font-size: 11px; font-weight: 700; letter-spacing: 0.08em;
+      text-transform: uppercase; color: var(--muted); margin-bottom: 10px;
+      display: flex; align-items: center; gap: 6px;
+    }
+    .s-tag {
+      display: inline-flex; align-items: center; gap: 4px;
+      font-size: 11px; font-weight: 600; padding: 3px 10px;
+      border-radius: 100px; margin: 2px;
+    }
+    .t-good { background:rgba(34,197,94,0.08); color:#16a34a; border:1px solid rgba(34,197,94,0.2); }
+    .t-miss { background:rgba(220,38,38,0.08); color:#dc2626; border:1px solid rgba(220,38,38,0.2); }
+    .t-weak { background:rgba(184,92,56,0.10); color:#b85c38; border:1px solid rgba(184,92,56,0.2); }
+    .phase-lbl { font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; display: block; margin-top: 10px; }
+
+    /* ── Overlap section ── */
+    .overlap-section { margin-bottom: 28px; page-break-inside: avoid; }
+    .overlap-grid { display: grid; grid-template-columns: 1fr 1.1fr 1fr; gap: 12px; margin-top: 14px; }
+    .overlap-col { border: 1px solid var(--border); border-radius: 10px; padding: 14px; }
+    .overlap-col.shared { background: var(--sage-d); border-color: var(--border2); }
+    .overlap-hdr { font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 10px; }
+    .ov-tag {
+      display: inline-flex; font-size: 11px; font-weight: 600;
+      padding: 3px 10px; border-radius: 100px; margin: 2px;
+      background: var(--sage-d); color: var(--sage);
+      border: 1px solid var(--border2);
+    }
+    .ov-tag.rust { background: var(--rust-d); color: var(--rust); border-color: rgba(184,92,56,0.25); }
+
+    /* ── Footer ── */
+    .report-footer {
+      margin-top: 40px; padding-top: 18px;
+      border-top: 1px solid var(--border);
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .rf-left { font-size: 11px; color: var(--muted); }
+    .rf-right { font-family: var(--serif); font-size: 13px; color: var(--sage); font-weight: 700; }
+
+    /* ── Print styles ── */
+    @media print {
+      .print-bar { display: none !important; }
+      .selector-row { display: none !important; }
+      .report { padding: 28px 36px 40px; margin: 0; max-width: 100%; }
+      body { background: #fff; }
+      @page { margin: 15mm 12mm; size: A4; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Print bar -->
+  <div class="print-bar">
+    <div class="print-bar-title">📊 Career Comparison Report — {{ name }}</div>
+    <div class="print-bar-btns">
+      <button class="print-btn" onclick="window.print()">🖨️ Print / Save as PDF</button>
+      <a href="{{ url_for('compare') }}" class="close-btn">✕ Close</a>
+    </div>
+  </div>
+
+  <!-- Inject careers data -->
+  <script>
+    const CAREERS_DATA  = {{ careers | tojson }};
+    const CAREER_MATRIX = {{ career_matrix_json | safe }};
+  </script>
+
+  <div class="report">
+
+    <!-- Header -->
+    <div class="report-header">
+      <div>
+        <div class="report-eyebrow">Career Comparison Report</div>
+        <div class="report-title">Side-by-Side<br>Analysis for <em>{{ name }}</em></div>
+        <div class="report-meta">
+          Generated on {{ date }}
+          &nbsp;·&nbsp; Comparing {{ careers|length }} career matches
+          &nbsp;·&nbsp; Powered by Skill 2 Career AI
+        </div>
+      </div>
+      <div class="report-logo">
+        Skill 2 Career
+        <span>AI-Powered Career Matching</span>
+      </div>
+    </div>
+
+    <!-- Career selectors (hidden on print) -->
+    <div class="selector-row">
+      <div class="sel-wrap">
+        <div class="sel-label">Career A</div>
+        <select id="sel-a" class="compare-select" onchange="render()">
+          {% for c in careers %}
+          <option value="{{ loop.index0 }}" {% if loop.index0 == 0 %}selected{% endif %}>{{ c.title }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="vs-label">⚖️</div>
+      <div class="sel-wrap">
+        <div class="sel-label">Career B</div>
+        <select id="sel-b" class="compare-select" onchange="render()">
+          {% for c in careers %}
+          <option value="{{ loop.index0 }}" {% if loop.index0 == 1 %}selected{% endif %}>{{ c.title }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <button class="update-btn" onclick="render()">Update Comparison</button>
+    </div>
+
+    <!-- Dynamic content injected by JS -->
+    <div id="report-body"></div>
+
+    <!-- Footer -->
+    <div class="report-footer">
+      <div class="rf-left">
+        Generated by Skill 2 Career AI &nbsp;·&nbsp; {{ date }}<br>
+        Results are based on AI skill-matching across 62 career profiles.
+      </div>
+      <div class="rf-right">Skill 2 Career</div>
+    </div>
+
+  </div>
+
+  <script>
+    const fmt = s => s.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+
+    function skillTags(arr, cls, icon) {
+      if (!arr || arr.length === 0)
+        return '<span class="s-tag t-good">✓ None</span>';
+      return arr.map(s => `<span class="s-tag ${cls}">${icon} ${fmt(s)}</span>`).join('');
+    }
+
+    function render() {
+      const iA = parseInt(document.getElementById('sel-a').value);
+      const iB = parseInt(document.getElementById('sel-b').value);
+      const a  = CAREERS_DATA[iA];
+      const b  = CAREERS_DATA[iB];
+
+      const aSkills  = new Set(Object.keys(CAREER_MATRIX[a.title] || {}));
+      const bSkills  = new Set(Object.keys(CAREER_MATRIX[b.title] || {}));
+      const shared   = [...aSkills].filter(s => bSkills.has(s));
+      const onlyA    = [...aSkills].filter(s => !bSkills.has(s));
+      const onlyB    = [...bSkills].filter(s => !aSkills.has(s));
+
+      const aWinsMatch = a.match_percent >= b.match_percent;
+      const aWinsSim   = parseFloat(a.similarity) >= parseFloat(b.similarity);
+      const aWinsCore  = a.missing_core.length <= b.missing_core.length;
+      const aWinsWeak  = a.weak_supporting.length <= b.weak_supporting.length;
+
+      const overallWinner = a.match_percent > b.match_percent ? a.title
+                          : b.match_percent > a.match_percent ? b.title
+                          : 'Both are equally matched';
+
+      const circ = (pct) => {
+        const r = 38; const c = 2 * Math.PI * r;
+        return `<div class="ring-wrap">
+          <svg viewBox="0 0 100 100">
+            <circle class="r-bg" cx="50" cy="50" r="${r}"/>
+            <circle class="r-fill" cx="50" cy="50" r="${r}"
+              style="stroke-dasharray:${c};stroke-dashoffset:${c*(1-pct/100)};"/>
+          </svg>
+          <div class="r-label">
+            <span class="r-pct">${pct}%</span>
+            <span class="r-sub">match</span>
+          </div>
+        </div>`;
+      };
+
+      document.getElementById('report-body').innerHTML = `
+
+        <!-- Section 1: Side by side cards -->
+        <div class="sec-title"><span class="sec-num">1</span> Career Overview</div>
+        <div class="compare-grid">
+          <div class="cmp-card card-a">
+            <span class="card-label">Career A</span>
+            <div class="cmp-name">${a.title}</div>
+            ${circ(a.match_percent)}
+            <p class="cmp-expl">${a.explanation}</p>
+          </div>
+          <div class="cmp-card">
+            <span class="card-label" style="background:rgba(184,92,56,0.08);color:#b85c38;border-color:rgba(184,92,56,0.2);">Career B</span>
+            <div class="cmp-name">${b.title}</div>
+            ${circ(b.match_percent)}
+            <p class="cmp-expl">${b.explanation}</p>
+          </div>
+        </div>
+
+        <!-- Section 2: Metrics table -->
+        <div class="metrics-section">
+          <div class="sec-title"><span class="sec-num">2</span> Head-to-Head Metrics</div>
+          <table class="metrics-table">
+            <thead>
+              <tr>
+                <th>${a.title}</th>
+                <th class="metric-col">Metric</th>
+                <th>${b.title}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="${aWinsMatch?'winner':'loser'}">${a.match_percent}%</td>
+                <td class="metric-label">Readiness</td>
+                <td class="${!aWinsMatch?'winner':'loser'}">${b.match_percent}%</td>
+              </tr>
+              <tr>
+                <td class="${aWinsSim?'winner':'loser'}">${a.similarity}</td>
+                <td class="metric-label">Similarity</td>
+                <td class="${!aWinsSim?'winner':'loser'}">${b.similarity}</td>
+              </tr>
+              <tr>
+                <td class="${aWinsCore?'winner':'loser'}">${a.missing_core.length} skills</td>
+                <td class="metric-label">Core Gaps</td>
+                <td class="${!aWinsCore?'winner':'loser'}">${b.missing_core.length} skills</td>
+              </tr>
+              <tr>
+                <td class="${aWinsWeak?'winner':'loser'}">${a.weak_supporting.length} skills</td>
+                <td class="metric-label">Weak Skills</td>
+                <td class="${!aWinsWeak?'winner':'loser'}">${b.weak_supporting.length} skills</td>
+              </tr>
+              <tr class="verdict-row">
+                <td colspan="3" style="text-align:center;">
+                  ✓ <strong>${overallWinner}</strong> is the better fit based on overall readiness.
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Section 3: Skill gaps -->
+        <div class="sec-title"><span class="sec-num">3</span> Skill Gaps Breakdown</div>
+        <div class="gaps-grid">
+          <div class="gap-col">
+            <div class="gap-col-title">📋 ${a.title}</div>
+            <span class="phase-lbl">Missing Core Skills</span>
+            <div>${skillTags(a.missing_core, 't-miss', '✗')}</div>
+            <span class="phase-lbl">Skills to Strengthen</span>
+            <div>${skillTags(a.weak_supporting, 't-weak', '△')}</div>
+          </div>
+          <div class="gap-col">
+            <div class="gap-col-title">📋 ${b.title}</div>
+            <span class="phase-lbl">Missing Core Skills</span>
+            <div>${skillTags(b.missing_core, 't-miss', '✗')}</div>
+            <span class="phase-lbl">Skills to Strengthen</span>
+            <div>${skillTags(b.weak_supporting, 't-weak', '△')}</div>
+          </div>
+        </div>
+
+        <!-- Section 4: Skill overlap -->
+        <div class="overlap-section">
+          <div class="sec-title"><span class="sec-num">4</span> Skill Overlap Analysis</div>
+          <div class="overlap-grid">
+            <div class="overlap-col">
+              <div class="overlap-hdr" style="color:var(--sage);">Only in ${a.title.split(' ')[0]}</div>
+              ${onlyA.length ? onlyA.map(s=>`<span class="ov-tag">${fmt(s)}</span>`).join('') : '<span style="font-size:12px;color:var(--muted)">None</span>'}
+            </div>
+            <div class="overlap-col shared">
+              <div class="overlap-hdr" style="color:var(--text);">Shared Skills (${shared.length})</div>
+              ${shared.length ? shared.map(s=>`<span class="ov-tag">${fmt(s)}</span>`).join('') : '<span style="font-size:12px;color:var(--muted)">No overlap</span>'}
+            </div>
+            <div class="overlap-col">
+              <div class="overlap-hdr" style="color:var(--rust);">Only in ${b.title.split(' ')[0]}</div>
+              ${onlyB.length ? onlyB.map(s=>`<span class="ov-tag rust">${fmt(s)}</span>`).join('') : '<span style="font-size:12px;color:var(--muted)">None</span>'}
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    window.addEventListener('load', render);
+  </script>
+</body>
+</html>
