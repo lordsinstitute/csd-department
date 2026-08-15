@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Analyzing... — Skill 2 Career</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,600;0,9..144,900;1,9..144,300;1,9..144,600;1,9..144,900&family=Lexend:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- SITE NAV -->
+  <div class="topbar">
+    <a href="{{ url_for('about') }}" class="tb-logo">Skill<em>2</em>Career</a>
+    <nav class="tb-nav">
+      {% if current_user.is_authenticated %}
+        <a href="{{ url_for('user_profile') }}" class="tb-link"><span class="tb-av">{{ current_user.name[0].upper() }}</span> Profile</a>
+        <div class="tb-divider"></div>
+        <a href="{{ url_for('profile') }}" class="tb-link">Skills</a>
+        <a href="{{ url_for('results') }}" class="tb-link">Results</a>
+        <a href="{{ url_for('compare') }}" class="tb-link">Compare</a>
+      {% endif %}
+    </nav>
+  </div>
+
+  <!-- Blurred background content -->
+  <div style="filter: blur(4px); pointer-events: none; padding: 80px 48px; opacity: 0.4;">
+    <div style="max-width:600px; margin: 0 auto; text-align:center;">
+      <h1 style="font-family:var(--serif); font-size:3rem; color:var(--text); margin-bottom:16px;">Your Career <em style="color:var(--sage);">Matches</em></h1>
+      <p style="color:var(--muted); font-size:1rem; line-height:1.8;">Processing your skill profile across 62 career paths…</p>
+      <div style="display:flex; gap:12px; justify-content:center; margin-top:32px; flex-wrap:wrap;">
+        <div style="background:#fff; border:1px solid var(--border); border-radius:12px; padding:16px 24px; min-width:120px;">
+          <div style="font-family:var(--serif); font-size:2rem; color:var(--sage); font-weight:900;">62</div>
+          <div style="font-size:12px; color:var(--muted);">Careers</div>
+        </div>
+        <div style="background:#fff; border:1px solid var(--border); border-radius:12px; padding:16px 24px; min-width:120px;">
+          <div style="font-family:var(--serif); font-size:2rem; color:var(--sage); font-weight:900;">8</div>
+          <div style="font-size:12px; color:var(--muted);">Domains</div>
+        </div>
+        <div style="background:#fff; border:1px solid var(--border); border-radius:12px; padding:16px 24px; min-width:120px;">
+          <div style="font-family:var(--serif); font-size:2rem; color:var(--sage); font-weight:900;">AI</div>
+          <div style="font-size:12px; color:var(--muted);">Powered</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- LOADING OVERLAY -->
+  <div class="loading-overlay" id="overlay">
+    <div class="lo-card">
+      <div class="lo-spinner"></div>
+      <div class="lo-title">Analyzing Your Profile</div>
+      <div class="lo-sub">Hybrid ML is matching your skills across 62 career paths…</div>
+
+      <div class="lo-steps">
+        <div class="lo-step active" id="s1"><div class="lo-dot"></div> Vectorizing your skill profile</div>
+        <div class="lo-step" id="s2"><div class="lo-dot"></div> Running Logistic Regression</div>
+        <div class="lo-step" id="s3"><div class="lo-dot"></div> Computing cosine similarity</div>
+        <div class="lo-step" id="s4"><div class="lo-dot"></div> Ranking career matches</div>
+        <div class="lo-step" id="s5"><div class="lo-dot"></div> Generating your roadmap</div>
+      </div>
+
+      <div class="lo-timer" id="timer">0:35</div>
+    </div>
+  </div>
+
+  <script>
+    // Countdown timer — 35 seconds
+    let timeLeft = 35;
+    const timerEl = document.getElementById('timer');
+
+    const countdown = setInterval(() => {
+      timeLeft--;
+      const m = Math.floor(timeLeft / 60);
+      const s = timeLeft % 60;
+      timerEl.textContent = m + ':' + String(s).padStart(2, '0');
+      if (timeLeft <= 0) clearInterval(countdown);
+    }, 1000);
+
+    // Step progression — spread over ~30 seconds
+    const steps = [
+      { id: 's1', delay: 0 },
+      { id: 's2', delay: 6000 },
+      { id: 's3', delay: 13000 },
+      { id: 's4', delay: 20000 },
+      { id: 's5', delay: 27000 },
+    ];
+
+    steps.forEach((step, i) => {
+      // Mark current as active
+      setTimeout(() => {
+        if (i > 0) {
+          document.getElementById(steps[i-1].id).className = 'lo-step done';
+        }
+        document.getElementById(step.id).className = 'lo-step active';
+      }, step.delay);
+    });
+
+    // Mark last done
+    setTimeout(() => {
+      document.getElementById('s5').className = 'lo-step done';
+    }, 33000);
+  </script>
+
+</body>
+</html>

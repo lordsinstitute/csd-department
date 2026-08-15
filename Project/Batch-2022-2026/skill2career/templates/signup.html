@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign Up — Skill 2 Career</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,700;0,9..144,900;1,9..144,600&family=Lexend:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body { background: var(--bg); display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 24px; }
+    .auth-wrap { width: 100%; max-width: 480px; }
+    .auth-logo { font-family: var(--serif); font-size: 1.4rem; font-weight: 900; color: var(--sage); text-align: center; margin-bottom: 32px; }
+    .auth-logo span { display: block; font-size: 12px; font-weight: 400; color: var(--muted); font-family: var(--font); margin-top: 4px; }
+    .auth-card { background: #fff; border: 1px solid var(--border); border-radius: 20px; padding: 40px; box-shadow: 0 4px 24px rgba(92,122,92,0.08); }
+    .auth-title { font-family: var(--serif); font-size: 1.8rem; font-weight: 900; color: var(--text); margin-bottom: 6px; }
+    .auth-sub { font-size: 13px; color: var(--muted); margin-bottom: 28px; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .form-group { margin-bottom: 16px; }
+    .form-label { font-size: 12px; font-weight: 700; color: var(--text); text-transform: uppercase; letter-spacing: 0.07em; display: block; margin-bottom: 8px; }
+    .form-input {
+      width: 100%; padding: 12px 16px; border: 1.5px solid var(--border);
+      border-radius: 10px; font-family: var(--font); font-size: 14px;
+      color: var(--text); background: var(--bg); outline: none; transition: border .2s;
+    }
+    .form-input:focus { border-color: var(--sage); background: #fff; }
+    .form-select {
+      width: 100%; padding: 12px 16px; border: 1.5px solid var(--border);
+      border-radius: 10px; font-family: var(--font); font-size: 14px;
+      color: var(--text); background: var(--bg); outline: none; cursor: pointer;
+    }
+    .auth-btn {
+      width: 100%; padding: 14px; background: var(--sage); color: #fff;
+      font-family: var(--font); font-size: 15px; font-weight: 700;
+      border: none; border-radius: 100px; cursor: pointer; transition: all .2s; margin-top: 8px;
+    }
+    .auth-btn:hover { background: #4a6349; transform: translateY(-1px); }
+    .auth-link { text-align: center; margin-top: 20px; font-size: 13px; color: var(--muted); }
+    .auth-link a { color: var(--sage); font-weight: 700; text-decoration: none; }
+    .flash-msg { padding: 12px 16px; border-radius: 10px; font-size: 13px; font-weight: 600; margin-bottom: 20px; }
+    .flash-error { background: rgba(220,38,38,0.08); color: #dc2626; border: 1px solid rgba(220,38,38,0.2); }
+    .flash-success { background: rgba(34,197,94,0.08); color: #16a34a; border: 1px solid rgba(34,197,94,0.2); }
+    .optional-tag { font-size: 10px; color: var(--muted); font-weight: 400; text-transform: none; margin-left: 4px; }
+  </style>
+</head>
+<body>
+  <div class="auth-wrap">
+    <div class="auth-logo">
+      🌿 Skill 2 Career
+      <span>AI-Powered Career Matching</span>
+    </div>
+    <div class="auth-card">
+      <div class="auth-title">Create your account</div>
+      <div class="auth-sub">Free forever — no credit card needed</div>
+
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% for category, message in messages %}
+          <div class="flash-msg flash-{{ category }}">{{ message }}</div>
+        {% endfor %}
+      {% endwith %}
+
+      <form method="POST">
+        <div class="form-group">
+          <label class="form-label">Full Name</label>
+          <input type="text" name="name" class="form-input" placeholder="e.g. Amena Fatima" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Email Address</label>
+          <input type="email" name="email" class="form-input" placeholder="you@example.com" required>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Password</label>
+            <input type="password" name="password" class="form-input" placeholder="Min 6 characters" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Confirm Password</label>
+            <input type="password" name="confirm_password" class="form-input" placeholder="Repeat password" required>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Education <span class="optional-tag">(optional)</span></label>
+          <select name="education" class="form-select">
+            <option value="">Select your education level</option>
+            <option value="Bachelor's">Bachelor's Degree</option>
+            <option value="Master's">Master's Degree</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Years of Experience <span class="optional-tag">(optional)</span></label>
+          <input type="number" name="experience" class="form-input" placeholder="0" min="0" max="50" value="0">
+        </div>
+        <button type="submit" class="auth-btn">Create Account →</button>
+      </form>
+
+      <div class="auth-link">
+        Already have an account? <a href="{{ url_for('auth.login') }}">Log in</a>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

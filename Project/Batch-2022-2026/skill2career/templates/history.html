@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Analysis History — Skill 2 Career</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,700;0,9..144,900;1,9..144,600&family=Lexend:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    .topbar { background:#fff; border-bottom:1px solid var(--border); padding:0 48px; display:flex; align-items:center; justify-content:space-between; height:60px; position:sticky; top:0; z-index:100; }
+    .tb-logo { font-family:var(--serif); font-size:1.1rem; font-weight:900; color:var(--sage); text-decoration:none; }
+    .tb-nav { display:flex; align-items:center; gap:12px; }
+    .tb-link { font-size:13px; font-weight:600; color:var(--muted); text-decoration:none; padding:8px 14px; border-radius:100px; transition:all .2s; }
+    .tb-link:hover,.tb-link.active { color:var(--sage); background:var(--sage-d); }
+    .tb-btn-out { font-size:13px; font-weight:600; color:var(--muted); text-decoration:none; padding:9px 20px; border-radius:100px; border:1.5px solid var(--border); transition:all .2s; }
+    .tb-btn-out:hover { border-color:var(--sage); color:var(--sage); }
+
+    .page { max-width:860px; margin:0 auto; padding:48px 48px 80px; }
+    .page-eyebrow { font-size:11px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--sage); margin-bottom:10px; }
+    .page-title { font-family:var(--serif); font-size:2.2rem; font-weight:900; color:var(--text); margin-bottom:8px; }
+    .page-sub { font-size:14px; color:var(--muted); margin-bottom:40px; }
+
+    .history-card { background:#fff; border:1px solid var(--border); border-radius:16px; padding:24px 28px; margin-bottom:16px; display:flex; align-items:center; justify-content:space-between; gap:20px; transition:all .2s; }
+    .history-card:hover { border-color:var(--sage); box-shadow:0 4px 20px rgba(92,122,92,0.1); transform:translateY(-2px); }
+
+    .hc-date-col { min-width:100px; }
+    .hc-date { font-size:12px; font-weight:700; color:var(--muted); }
+    .hc-time { font-size:11px; color:var(--muted); margin-top:2px; opacity:0.7; }
+
+    .hc-main { flex:1; }
+    .hc-top { font-family:var(--serif); font-size:1.2rem; font-weight:900; color:var(--text); margin-bottom:6px; }
+    .hc-others { display:flex; flex-wrap:wrap; gap:6px; }
+    .hc-tag { font-size:11px; font-weight:600; padding:3px 10px; border-radius:100px; background:var(--sage-d); color:var(--sage); border:1px solid var(--border); }
+
+    .hc-pct { text-align:center; min-width:70px; }
+    .hc-pct-n { font-family:var(--serif); font-size:1.8rem; font-weight:900; color:var(--sage); line-height:1; }
+    .hc-pct-l { font-size:10px; color:var(--muted); font-weight:600; text-transform:uppercase; letter-spacing:0.07em; margin-top:3px; }
+
+    .hc-actions { display:flex; flex-direction:column; gap:8px; min-width:80px; }
+    .hc-btn { font-size:12px; font-weight:700; padding:8px 16px; border-radius:100px; text-decoration:none; border:none; cursor:pointer; font-family:var(--font); text-align:center; transition:all .2s; }
+    .hc-view { background:var(--sage); color:#fff; }
+    .hc-view:hover { background:#4a6349; }
+    .hc-del { background:rgba(220,38,38,0.07); color:#dc2626; }
+    .hc-del:hover { background:rgba(220,38,38,0.15); }
+
+    .empty-wrap { text-align:center; padding:80px 40px; }
+    .empty-icon { font-size:3rem; margin-bottom:16px; }
+    .empty-title { font-family:var(--serif); font-size:1.4rem; font-weight:900; color:var(--text); margin-bottom:8px; }
+    .empty-sub { font-size:14px; color:var(--muted); margin-bottom:28px; }
+    .start-btn { display:inline-block; padding:14px 32px; background:var(--sage); color:#fff; font-weight:700; border-radius:100px; text-decoration:none; transition:all .2s; }
+    .start-btn:hover { background:#4a6349; }
+
+    .flash-msg { padding:12px 16px; border-radius:10px; font-size:13px; font-weight:600; margin-bottom:20px; }
+    .flash-info { background:rgba(92,122,92,0.08); color:var(--sage); border:1px solid var(--border); }
+  </style>
+</head>
+<body>
+  <div class="topbar">
+    <a href="{{ url_for('about') }}" class="tb-logo">Skill<em>2</em>Career</a>
+    <nav class="tb-nav">
+      {% if current_user.is_authenticated %}
+        <a href="{{ url_for('user_profile') }}" class="tb-link">
+          <span class="tb-av">{{ current_user.name[0].upper() }}</span> Profile
+        </a>
+        <div class="tb-divider"></div>
+        <a href="{{ url_for('profile') }}" class="tb-link">Skills</a>
+        <a href="{{ url_for('results') }}" class="tb-link">Results</a>
+        <a href="{{ url_for('compare') }}" class="tb-link">Compare</a>
+        <div class="tb-divider"></div>
+        <a href="{{ url_for('auth.logout') }}" class="tb-link">Log out</a>
+      {% else %}
+        <a href="{{ url_for('auth.login') }}" class="tb-link">Log in</a>
+        <a href="{{ url_for('auth.signup') }}" class="tb-btn">Sign up</a>
+      {% endif %}
+    </nav>
+  </div>
+  </div>
+
+  <div class="page">
+    <div class="page-eyebrow">Your Journey</div>
+    <div class="page-title">Analysis History</div>
+    <div class="page-sub">Every career analysis you've run — click View to revisit any result.</div>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% for category, message in messages %}
+        <div class="flash-msg flash-{{ category }}">{{ message }}</div>
+      {% endfor %}
+    {% endwith %}
+
+    {% if history %}
+      {% for item in history %}
+      <div class="history-card">
+        <div class="hc-date-col">
+          <div class="hc-date">{{ item.run_at.strftime('%d %b %Y') }}</div>
+          <div class="hc-time">{{ item.run_at.strftime('%I:%M %p') }}</div>
+        </div>
+
+        <div class="hc-main">
+          <div class="hc-top">{{ item.top_career }}</div>
+          <div class="hc-others">
+            {% for career in item.careers[1:4] %}
+              <span class="hc-tag">{{ career.title }}</span>
+            {% endfor %}
+          </div>
+        </div>
+
+        <div class="hc-pct">
+          <div class="hc-pct-n">{{ item.top_percent|round(1) }}%</div>
+          <div class="hc-pct-l">Readiness</div>
+        </div>
+
+        <div class="hc-actions">
+          <a href="{{ url_for('history_detail', history_id=item.id) }}" class="hc-btn hc-view">View</a>
+          <form method="POST" action="{{ url_for('delete_history', history_id=item.id) }}">
+            <button type="submit" class="hc-btn hc-del" onclick="return confirm('Delete this analysis?')" style="width:100%">Delete</button>
+          </form>
+        </div>
+      </div>
+      {% endfor %}
+
+    {% else %}
+      <div class="empty-wrap">
+        <div class="empty-icon">📊</div>
+        <div class="empty-title">No analyses yet</div>
+        <div class="empty-sub">Run your first career analysis to see your results saved here.</div>
+        <a href="{{ url_for('profile') }}" class="start-btn">Start Analysis →</a>
+      </div>
+    {% endif %}
+
+  </div>
+</body>
+</html>

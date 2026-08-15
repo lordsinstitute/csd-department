@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Compare Careers — Skill 2 Career</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,600;0,9..144,900;1,9..144,300;1,9..144,600;1,9..144,900&family=Lexend:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    .compare-selectors {
+      display: flex; align-items: center; justify-content: center;
+      gap: 24px; margin-top: 28px; flex-wrap: wrap;
+    }
+    .compare-sel-wrap { display: flex; flex-direction: column; gap: 7px; }
+    .compare-sel-label {
+      font-size: 11px; font-weight: 700; color: var(--muted);
+      letter-spacing: 0.09em; text-transform: uppercase;
+    }
+    .compare-select {
+      padding: 13px 20px;
+      background: var(--card2); border: 1.5px solid var(--border);
+      border-radius: var(--r); color: var(--text);
+      font-family: var(--font); font-size: 14px; font-weight: 600;
+      outline: none; cursor: pointer; min-width: 210px;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .compare-select:focus { border-color: var(--sage); box-shadow: 0 0 0 3px var(--sage-d); }
+    .compare-vs { font-size: 26px; padding-top: 24px; }
+
+    .compare-grid {
+      display: grid;
+      grid-template-columns: 1fr 220px 1fr;
+      gap: 18px;
+      align-items: start;
+      margin-bottom: 24px;
+    }
+    @media(max-width: 900px) {
+      .compare-grid { grid-template-columns: 1fr; }
+      .compare-vs { display: none; }
+    }
+
+    .cmp-card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: var(--r-xl); padding: 36px;
+      box-shadow: var(--shadow); text-align: center;
+    }
+    .cmp-a { border-color: var(--border2); }
+
+    .cmp-metrics {
+      display: flex; flex-direction: column; gap: 10px;
+      justify-content: center; padding: 8px 0;
+    }
+    .cmp-metric-row {
+      display: grid; grid-template-columns: 1fr auto 1fr;
+      align-items: center; gap: 8px;
+      padding: 12px 12px;
+      background: var(--card); border-radius: var(--r);
+      border: 1px solid var(--border);
+    }
+    .cmp-metric-a, .cmp-metric-b {
+      font-family: var(--serif); font-size: 16px; font-weight: 900;
+      color: var(--dim); text-align: center;
+    }
+    .cmp-winner { color: var(--sage) !important; }
+    .cmp-metric-label {
+      font-size: 10px; font-weight: 700; color: var(--muted);
+      letter-spacing: 0.06em; text-transform: uppercase;
+      text-align: center; white-space: nowrap;
+    }
+    .cmp-verdict {
+      text-align: center; padding: 14px 16px;
+      background: var(--sage-d); border: 1px solid var(--border2);
+      border-radius: var(--r); font-size: 13px; color: var(--text); line-height: 1.6;
+      margin-top: 4px;
+    }
+
+    .gaps-row {
+      display: grid; grid-template-columns: 1fr auto 1fr;
+      gap: 18px; align-items: start; margin-bottom: 32px;
+    }
+    @media(max-width:900px){ .gaps-row { grid-template-columns: 1fr; } }
+
+    .cmp-detail {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: var(--r-lg); padding: 22px;
+    }
+    .gaps-vs-icon {
+      display: flex; align-items: center; justify-content: center;
+      padding-top: 14px; font-size: 22px;
+    }
+
+    .overlap-section {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: var(--r-xl); padding: 44px;
+      box-shadow: var(--shadow); margin-bottom: 48px;
+    }
+    .overlap-grid {
+      display: grid; grid-template-columns: 1fr 1.2fr 1fr; gap: 20px; margin-top: 24px;
+    }
+    @media(max-width:700px){ .overlap-grid { grid-template-columns: 1fr; } }
+    .overlap-col { display: flex; flex-direction: column; gap: 4px; }
+    .overlap-col.overlap-shared {
+      padding: 18px; background: var(--bg2);
+      border-radius: var(--r-lg); border: 1px solid var(--border);
+    }
+    .overlap-hdr {
+      font-size: 11px; font-weight: 700; letter-spacing: 0.09em;
+      text-transform: uppercase; margin-bottom: 12px;
+    }
+
+    /* ring */
+    .ring-wrap { position:relative; width:110px; height:110px; margin:18px auto; }
+    .ring-wrap svg { width:100%; height:100%; transform:rotate(-90deg); }
+    .r-bg   { fill:none; stroke:rgba(92,122,92,0.1); stroke-width:5; }
+    .r-fill { fill:none; stroke:url(#sageGrad); stroke-width:5; stroke-linecap:round; }
+    .r-label { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; }
+    .r-pct  { font-family:var(--serif); font-size:1.8rem; font-weight:900; color:var(--sage); line-height:1; }
+    .r-sub  { font-size:11px; color:var(--muted); margin-top:3px; font-weight:500; }
+
+    .s-tag { display:inline-flex; align-items:center; gap:4px; font-size:12px; font-weight:600; padding:4px 12px; border-radius:100px; margin:2px; }
+    .t-miss { background:rgba(220,38,38,0.08); color:#dc2626; border:1px solid rgba(220,38,38,0.2); }
+    .t-weak { background:rgba(184,92,56,0.1);  color:#b85c38; border:1px solid rgba(184,92,56,0.2); }
+    .t-good { background:rgba(34,197,94,0.08); color:#16a34a; border:1px solid rgba(34,197,94,0.2); }
+    .phase-label { font-size:10px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:var(--muted); margin-bottom:8px; margin-top:10px; display:block; }
+    .career-name { font-family:var(--serif); font-size:1.7rem; font-weight:900; color:var(--text); margin-bottom:10px; }
+    .expl { font-size:13px; color:var(--muted); line-height:1.8; margin-top:10px; text-align:left; }
+    .best-badge {
+      display:inline-flex; align-items:center;
+      font-size:11px; font-weight:700; letter-spacing:0.09em; text-transform:uppercase;
+      color:var(--sage); background:var(--sage-d); border:1px solid var(--border2);
+      padding:5px 14px; border-radius:100px; margin-bottom:14px;
+    }
+    .fade-up { opacity:0; transform:translateY(16px); animation:fadeUp 0.6s forwards; }
+    @keyframes fadeUp { to { opacity:1; transform:translateY(0); } }
+    .fade-up:nth-child(2){animation-delay:0.1s}
+    .fade-up:nth-child(3){animation-delay:0.2s}
+    .fade-up:nth-child(4){animation-delay:0.3s}
+  </style>
+</head>
+<body>
+  <div class="topbar">
+    <a href="{{ url_for('about') }}" class="tb-logo">Skill<em>2</em>Career</a>
+    <nav class="tb-nav">
+      {% if current_user.is_authenticated %}
+        <a href="{{ url_for('user_profile') }}" class="tb-link">
+          <span class="tb-av">{{ current_user.name[0].upper() }}</span> Profile
+        </a>
+        <div class="tb-divider"></div>
+        <a href="{{ url_for('profile') }}" class="tb-link">Skills</a>
+        <a href="{{ url_for('results') }}" class="tb-link">Results</a>
+        <a href="{{ url_for('compare') }}" class="tb-link">Compare</a>
+        <div class="tb-divider"></div>
+        <a href="{{ url_for('auth.logout') }}" class="tb-link">Log out</a>
+      {% else %}
+        <a href="{{ url_for('auth.login') }}" class="tb-link">Log in</a>
+        <a href="{{ url_for('auth.signup') }}" class="tb-btn">Sign up</a>
+      {% endif %}
+    </nav>
+  </div>
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+
+  <svg width="0" height="0" style="position:absolute;">
+    <defs>
+      <linearGradient id="sageGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" style="stop-color:#5c7a5c"/>
+        <stop offset="100%" style="stop-color:#7a9e7a"/>
+      </linearGradient>
+    </defs>
+  </svg>
+
+  <script>
+    const CAREERS_DATA  = {{ careers_json | safe }};
+    const USER_SKILLS   = {{ user_skills_json | safe }};
+    const CAREER_MATRIX = {{ career_matrix_json | safe }};
+  </script>
+
+  <div class="dash-container">
+
+    <div class="dash-hdr fade-up">
+      <a href="{{ url_for('results') }}" class="btn btn-outline" style="margin-bottom:28px;display:inline-flex;">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        Back to Results
+      </a>
+      <div class="tag" style="justify-content:center;"><span class="dot"></span> Career Comparison</div>
+      <div class="sage-line center"></div>
+      <h2>Compare <em style="font-style:italic;color:var(--sage);">Side by Side</em></h2>
+      <p class="user-line" style="margin-bottom:24px;">Select any two careers from your top matches to compare them in detail.</p>
+
+      <div class="compare-selectors">
+        <div class="compare-sel-wrap">
+          <label class="compare-sel-label">Career A</label>
+          <select id="sel-a" class="compare-select" onchange="renderCompare()">
+            {% for career in careers %}
+            <option value="{{ loop.index0 }}" {% if loop.index0 == 0 %}selected{% endif %}>{{ career.title }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="compare-vs">⚖️</div>
+        <div class="compare-sel-wrap">
+          <label class="compare-sel-label">Career B</label>
+          <select id="sel-b" class="compare-select" onchange="renderCompare()">
+            {% for career in careers %}
+            <option value="{{ loop.index0 }}" {% if loop.index0 == 1 %}selected{% endif %}>{{ career.title }}</option>
+            {% endfor %}
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div id="compare-grid" class="compare-grid fade-up"></div>
+    <div id="gaps-row" class="gaps-row fade-up"></div>
+
+    <div class="overlap-section fade-up">
+      <div class="tag"><span class="dot"></span> Skill Overlap</div>
+      <div class="sage-line"></div>
+      <h2>Shared & Unique Skills</h2>
+      <div id="overlap-grid" class="overlap-grid"></div>
+    </div>
+
+    <div class="dash-footer fade-up" style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+      <a href="{{ url_for('profile') }}" class="btn btn-outline">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        Re-analyze with new skills
+      </a>
+      <a href="{{ url_for('print_compare') }}" target="_blank" class="btn btn-outline">
+        🖨️ Print Results
+      </a>
+    </div>
+
+  </div>
+
+  <script>
+    const fmt = s => s.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+
+    function renderCompare() {
+      const iA = parseInt(document.getElementById('sel-a').value);
+      const iB = parseInt(document.getElementById('sel-b').value);
+      const a  = CAREERS_DATA[iA];
+      const b  = CAREERS_DATA[iB];
+
+      const metrics = [
+        { label: 'Readiness',   aVal: a.match_percent + '%',                bVal: b.match_percent + '%',                aNum: a.match_percent,                bNum: b.match_percent },
+        { label: 'Similarity',  aVal: a.similarity,                         bVal: b.similarity,                         aNum: parseFloat(a.similarity) * 100, bNum: parseFloat(b.similarity) * 100 },
+        { label: 'Core Gaps',   aVal: a.missing_core.length + ' skills',    bVal: b.missing_core.length + ' skills',    aNum: 10 - a.missing_core.length * 3,    bNum: 10 - b.missing_core.length * 3 },
+        { label: 'Weak Skills', aVal: a.weak_supporting.length + ' skills', bVal: b.weak_supporting.length + ' skills', aNum: 10 - a.weak_supporting.length * 2, bNum: 10 - b.weak_supporting.length * 2 },
+      ];
+
+      // ── Main grid: card | metrics | card ──
+      document.getElementById('compare-grid').innerHTML = `
+        <div class="cmp-card cmp-a">
+          <div class="best-badge">Career A</div>
+          <div class="career-name">${a.title}</div>
+          <div class="ring-wrap">
+            <svg viewBox="0 0 100 100">
+              <circle class="r-bg" cx="50" cy="50" r="45"/>
+              <circle class="r-fill" cx="50" cy="50" r="45"
+                style="stroke-dasharray:283;stroke-dashoffset:${283*(1-a.match_percent/100)};"/>
+            </svg>
+            <div class="r-label">
+              <span class="r-pct">${a.match_percent}%</span>
+              <span class="r-sub">match</span>
+            </div>
+          </div>
+          <p class="expl">${a.explanation}</p>
+        </div>
+
+        <div class="cmp-metrics">
+          ${metrics.map(m => `
+            <div class="cmp-metric-row">
+              <div class="cmp-metric-a ${m.aNum >= m.bNum ? 'cmp-winner' : ''}">${m.aVal}</div>
+              <div class="cmp-metric-label">${m.label}</div>
+              <div class="cmp-metric-b ${m.bNum >= m.aNum ? 'cmp-winner' : ''}">${m.bVal}</div>
+            </div>`).join('')}
+          <div class="cmp-verdict">
+            ${a.match_percent > b.match_percent
+              ? `<strong>${a.title}</strong> is the better fit for you right now.`
+              : a.match_percent < b.match_percent
+              ? `<strong>${b.title}</strong> is the better fit for you right now.`
+              : `Both careers are equally matched for you!`}
+          </div>
+        </div>
+
+        <div class="cmp-card">
+          <div class="best-badge" style="background:rgba(92,122,92,0.08);">Career B</div>
+          <div class="career-name">${b.title}</div>
+          <div class="ring-wrap">
+            <svg viewBox="0 0 100 100">
+              <circle class="r-bg" cx="50" cy="50" r="45"/>
+              <circle class="r-fill" cx="50" cy="50" r="45"
+                style="stroke-dasharray:283;stroke-dashoffset:${283*(1-b.match_percent/100)};"/>
+            </svg>
+            <div class="r-label">
+              <span class="r-pct">${b.match_percent}%</span>
+              <span class="r-sub">match</span>
+            </div>
+          </div>
+          <p class="expl">${b.explanation}</p>
+        </div>
+      `;
+
+      // ── Gaps row ──
+      document.getElementById('gaps-row').innerHTML = `
+        <div class="cmp-detail">
+          <span class="phase-label">Core Skills Needed</span>
+          <div style="margin-bottom:8px;">
+            ${a.missing_core.length
+              ? a.missing_core.map(s => `<span class="s-tag t-miss">✗ ${fmt(s)}</span>`).join('')
+              : '<span class="s-tag t-good">✓ No core gaps!</span>'}
+          </div>
+          <span class="phase-label">Skills to Strengthen</span>
+          <div>
+            ${a.weak_supporting.length
+              ? a.weak_supporting.map(s => `<span class="s-tag t-weak">△ ${fmt(s)}</span>`).join('')
+              : '<span class="s-tag t-good">✓ None</span>'}
+          </div>
+        </div>
+        <div class="gaps-vs-icon">🆚</div>
+        <div class="cmp-detail">
+          <span class="phase-label">Core Skills Needed</span>
+          <div style="margin-bottom:8px;">
+            ${b.missing_core.length
+              ? b.missing_core.map(s => `<span class="s-tag t-miss">✗ ${fmt(s)}</span>`).join('')
+              : '<span class="s-tag t-good">✓ No core gaps!</span>'}
+          </div>
+          <span class="phase-label">Skills to Strengthen</span>
+          <div>
+            ${b.weak_supporting.length
+              ? b.weak_supporting.map(s => `<span class="s-tag t-weak">△ ${fmt(s)}</span>`).join('')
+              : '<span class="s-tag t-good">✓ None</span>'}
+          </div>
+        </div>
+      `;
+
+      // ── Skill overlap ──
+      const aSkills = new Set(Object.keys(CAREER_MATRIX[a.title] || {}));
+      const bSkills = new Set(Object.keys(CAREER_MATRIX[b.title] || {}));
+      const shared  = [...aSkills].filter(s => bSkills.has(s));
+      const onlyA   = [...aSkills].filter(s => !bSkills.has(s));
+      const onlyB   = [...bSkills].filter(s => !aSkills.has(s));
+
+      document.getElementById('overlap-grid').innerHTML = `
+        <div class="overlap-col">
+          <div class="overlap-hdr" style="color:var(--sage);">Only in ${a.title.split(' ')[0]}</div>
+          ${onlyA.length
+            ? onlyA.map(s => `<span class="s-tag" style="background:var(--sage-d);color:var(--sage);border:1px solid var(--border2);margin:2px;display:inline-flex;">${fmt(s)}</span>`).join('')
+            : '<span style="color:var(--dim);font-size:13px;">None</span>'}
+        </div>
+        <div class="overlap-col overlap-shared">
+          <div class="overlap-hdr" style="color:var(--text);">Shared Skills</div>
+          ${shared.length
+            ? shared.map(s => `<span class="s-tag" style="background:rgba(92,122,92,0.12);color:var(--text);border:1px solid var(--border2);margin:2px;display:inline-flex;">${fmt(s)}</span>`).join('')
+            : '<span style="color:var(--dim);font-size:13px;">No overlap</span>'}
+        </div>
+        <div class="overlap-col">
+          <div class="overlap-hdr" style="color:var(--rust);">Only in ${b.title.split(' ')[0]}</div>
+          ${onlyB.length
+            ? onlyB.map(s => `<span class="s-tag" style="background:var(--rust-d);color:var(--rust);border:1px solid rgba(184,92,56,0.25);margin:2px;display:inline-flex;">${fmt(s)}</span>`).join('')
+            : '<span style="color:var(--dim);font-size:13px;">None</span>'}
+        </div>
+      `;
+    }
+
+    window.addEventListener('load', renderCompare);
+  </script>
+</body>
+</html>
